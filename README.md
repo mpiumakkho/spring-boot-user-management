@@ -7,10 +7,6 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?style=for-the-badge&logo=postgresql)
 ![Maven](https://img.shields.io/badge/Maven-3.9.5-red?style=for-the-badge&logo=apache-maven)
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.1-blue?style=for-the-badge&logo=thymeleaf)
-![Log4j2](https://img.shields.io/badge/Log4j2-Logging-important?style=for-the-badge&logo=apache)
-![Lombok](https://img.shields.io/badge/Lombok-Enabled-orange?style=for-the-badge&logo=lombok)
-![JSON](https://img.shields.io/badge/JSON-org.json-informational?style=for-the-badge&logo=json)
-![Devtools](https://img.shields.io/badge/Devtools-Spring_Boot-yellow?style=for-the-badge&logo=spring)
 
 A Spring Boot application for managing users, roles, and permissions with session management, separated into 2 services (Web API, Core API).
 
@@ -51,15 +47,9 @@ A Spring Boot application for managing users, roles, and permissions with sessio
 - Spring Boot 3.x
 - Spring Security
 - Spring Data JPA
-- Spring Boot Actuator
 - Springdoc OpenAPI (Swagger UI)
 - PostgreSQL
-- Maven
 - Thymeleaf (web-api)
-- Log4j2
-- Lombok
-- JSON (org.json)
-- Spring Boot Devtools
 
 ## Project Structure
 ```bash
