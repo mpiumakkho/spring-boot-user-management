@@ -4,7 +4,7 @@
 ![Spring Security](https://img.shields.io/badge/Spring_Security-Enabled-success?style=for-the-badge&logo=spring-security)
 ![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-Yes-blueviolet?style=for-the-badge&logo=spring)
 ![Springdoc](https://img.shields.io/badge/OpenAPI-Swagger_UI-yellowgreen?style=for-the-badge&logo=openapi-initiative)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?style=for-the-badge&logo=postgresql)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql)
 ![Maven](https://img.shields.io/badge/Maven-3.9.5-red?style=for-the-badge&logo=apache-maven)
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.1-blue?style=for-the-badge&logo=thymeleaf)
 
