@@ -1,4 +1,16 @@
 # User Management System
+![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-brightgreen?style=for-the-badge&logo=spring-boot)
+![Spring Security](https://img.shields.io/badge/Spring_Security-Enabled-success?style=for-the-badge&logo=spring-security)
+![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-Yes-blueviolet?style=for-the-badge&logo=spring)
+![Springdoc](https://img.shields.io/badge/OpenAPI-Swagger_UI-yellowgreen?style=for-the-badge&logo=openapi-initiative)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?style=for-the-badge&logo=postgresql)
+![Maven](https://img.shields.io/badge/Maven-3.9.5-red?style=for-the-badge&logo=apache-maven)
+![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.1-blue?style=for-the-badge&logo=thymeleaf)
+![Log4j2](https://img.shields.io/badge/Log4j2-Logging-important?style=for-the-badge&logo=apache)
+![Lombok](https://img.shields.io/badge/Lombok-Enabled-orange?style=for-the-badge&logo=lombok)
+![JSON](https://img.shields.io/badge/JSON-org.json-informational?style=for-the-badge&logo=json)
+![Devtools](https://img.shields.io/badge/Devtools-Spring_Boot-yellow?style=for-the-badge&logo=spring)
 
 A Spring Boot application for managing users, roles, and permissions with session management, separated into 2 services (Web API, Core API).
 
