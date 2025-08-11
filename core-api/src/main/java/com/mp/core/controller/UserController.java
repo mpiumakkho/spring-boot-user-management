@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mp.core.dto.LoginRequestDTO;
 import com.mp.core.dto.UserMapper;
 import com.mp.core.dto.UserRequestDTO;
 import com.mp.core.entity.Role;
@@ -473,7 +475,17 @@ public class UserController {
                     userJson.put("firstName", user.getFirstName());
                     userJson.put("lastName", user.getLastName());
                     userJson.put("status", user.getStatus());
-                    userJson.put("roles", user.getRoles());
+                    // roles: id + name only
+                    JSONArray rolesJson = new JSONArray();
+                    if (user.getRoles() != null) {
+                        for (Role role : user.getRoles()) {
+                            JSONObject r = new JSONObject();
+                            r.put("roleId", role.getRoleId());
+                            r.put("name", role.getName());
+                            rolesJson.put(r);
+                        }
+                    }
+                    userJson.put("roles", rolesJson);
                     userJson.put("token", session.getToken());
                     
                     JSONObject result = new JSONObject();
@@ -492,7 +504,7 @@ public class UserController {
     }
 
     @PostMapping("/login-encrypt")
-    public ResponseEntity<?> loginEncrypt(@Valid @RequestBody UserRequestDTO request) {
+    public ResponseEntity<?> loginEncrypt(@Valid @RequestBody LoginRequestDTO request) {
         try {
             String usernameOrEmail = request.getUsername();
             String password = request.getPassword();
