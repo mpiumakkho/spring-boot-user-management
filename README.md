@@ -15,6 +15,7 @@ A Spring Boot application for managing users, roles, and permissions with sessio
     - [Role Management](#role-management)
   - [Security](#security)
   - [🚀 Getting Started](#-getting-started)
+  - [👥 Default User Accounts](#-default-user-accounts)
   - [⚙️ Configuration Guide](#️-configuration-guide)
     - [Environment-Specific Configuration](#environment-specific-configuration)
     - [Important Ports](#important-ports)
@@ -110,6 +111,23 @@ mp-ums/
 2. Edit database config file in core-api
 3. Run Core API and Web API using `mvn spring-boot:run`
 4. See API details at Swagger UI: http://localhost:8091/swagger-ui.html
+
+## 👥 Default User Accounts
+
+The system comes with pre-configured test accounts for different roles:
+
+| Username | Email | Role | Permissions |
+|----------|-------|------|-------------|
+| `admin` | admin@example.com | SUPER_ADMIN | Full system access - all permissions |
+| `manager` | manager@example.com | USER_MANAGER | User management (create, read, update) |
+| `viewer` | viewer@example.com | VIEWER | Read-only access to all data |
+| `mod` | mod@example.com | MODERATOR | Read and update user data |
+| `analyst` | analyst@example.com | ANALYST | Dashboard view only |
+| `support` | support@example.com | SUPPORT | Read users and view dashboard |
+
+**Login Credentials:**
+- **Password for all accounts:** `password`
+- All passwords are encrypted with BCrypt in the database
 
 ## ⚙️ Configuration Guide
 
