@@ -1,4 +1,5 @@
 # User Management System
+<<<<<<< HEAD
 ![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.x-brightgreen?style=for-the-badge&logo=spring-boot)
 ![Spring Security](https://img.shields.io/badge/Spring_Security-Enabled-success?style=for-the-badge&logo=spring-security)
@@ -7,6 +8,8 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql)
 ![Maven](https://img.shields.io/badge/Maven-3.9.5-red?style=for-the-badge&logo=apache-maven)
 ![Thymeleaf](https://img.shields.io/badge/Thymeleaf-3.1-blue?style=for-the-badge&logo=thymeleaf)
+=======
+>>>>>>> dev
 
 A Spring Boot application for managing users, roles, and permissions with session management, separated into 2 services (Web API, Core API).
 
@@ -23,6 +26,10 @@ A Spring Boot application for managing users, roles, and permissions with sessio
     - [Role Management](#role-management)
   - [Security](#security)
   - [🚀 Getting Started](#-getting-started)
+<<<<<<< HEAD
+=======
+  - [👥 Default User Accounts](#-default-user-accounts)
+>>>>>>> dev
   - [⚙️ Configuration Guide](#️-configuration-guide)
     - [Environment-Specific Configuration](#environment-specific-configuration)
     - [Important Ports](#important-ports)
@@ -47,9 +54,21 @@ A Spring Boot application for managing users, roles, and permissions with sessio
 - Spring Boot 3.x
 - Spring Security
 - Spring Data JPA
+<<<<<<< HEAD
 - Springdoc OpenAPI (Swagger UI)
 - PostgreSQL
 - Thymeleaf (web-api)
+=======
+- Spring Boot Actuator
+- Springdoc OpenAPI (Swagger UI)
+- PostgreSQL
+- Maven
+- Thymeleaf (web-api)
+- Log4j2
+- Lombok
+- JSON (org.json)
+- Spring Boot Devtools
+>>>>>>> dev
 
 ## Project Structure
 ```bash
@@ -113,6 +132,26 @@ mp-ums/
 3. Run Core API and Web API using `mvn spring-boot:run`
 4. See API details at Swagger UI: http://localhost:8091/swagger-ui.html
 
+<<<<<<< HEAD
+=======
+## 👥 Default User Accounts
+
+The system comes with pre-configured test accounts for different roles:
+
+| Username | Email | Role | Permissions |
+|----------|-------|------|-------------|
+| `admin` | admin@example.com | SUPER_ADMIN | Full system access - all permissions |
+| `manager` | manager@example.com | USER_MANAGER | User management (create, read, update) |
+| `viewer` | viewer@example.com | VIEWER | Read-only access to all data |
+| `mod` | mod@example.com | MODERATOR | Read and update user data |
+| `analyst` | analyst@example.com | ANALYST | Dashboard view only |
+| `support` | support@example.com | SUPPORT | Read users and view dashboard |
+
+**Login Credentials:**
+- **Password for all accounts:** `password`
+- All passwords are encrypted with BCrypt in the database
+
+>>>>>>> dev
 ## ⚙️ Configuration Guide
 
 ### Environment-Specific Configuration
