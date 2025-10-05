@@ -31,28 +31,17 @@ public class SecurityConfig {
 
     @Autowired
     private SessionAuthSuccessHandler sessionAuthSuccessHandler;
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> dev
     @Autowired
     private SessionFilter sessionFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-<<<<<<< HEAD
-            .authenticationProvider(coreApiAuthProvider)
-            .addFilterBefore(sessionFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/auth/login", "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
-=======
                 .authenticationProvider(coreApiAuthProvider)
                 .addFilterBefore(sessionFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/login", "/auth/login", "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/demo/css/**", "/demo/js/**", "/demo/images/**", "/demo/static/**").permitAll()
->>>>>>> dev
                 // admin area
                 .requestMatchers("/admin/**").hasRole("SUPER_ADMIN")
                 // user management
@@ -70,34 +59,20 @@ public class SecurityConfig {
                 // dashboard and profile
                 .requestMatchers("/dashboard", "/profile/**").authenticated()
                 .anyRequest().authenticated()
-<<<<<<< HEAD
-            )
-            .formLogin(form -> form
-=======
                 )
                 .formLogin(form -> form
->>>>>>> dev
                 .loginPage("/")
                 .loginProcessingUrl("/")
                 .successHandler(sessionAuthSuccessHandler)
                 .permitAll()
-<<<<<<< HEAD
-            )
-            .logout(logout -> logout
-=======
                 )
                 .logout(logout -> logout
->>>>>>> dev
                 .logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
-<<<<<<< HEAD
-            );
-=======
                 );
->>>>>>> dev
         return http.build();
     }
 
@@ -112,8 +87,4 @@ public class SecurityConfig {
             }
         };
     }
-<<<<<<< HEAD
-} 
-=======
 }
->>>>>>> dev
