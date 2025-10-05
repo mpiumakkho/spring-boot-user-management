@@ -276,8 +276,6 @@ footer {
     box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.1) !important;
 }
 
-<<<<<<< HEAD
-=======
 /* Modern Enhancements */
 .glass-effect {
     background: rgba(255, 255, 255, 0.1);
@@ -480,7 +478,6 @@ footer {
     }
 }
 
->>>>>>> dev
 /* Form Validation States */
 .is-invalid {
     border-color: #dc3545;
