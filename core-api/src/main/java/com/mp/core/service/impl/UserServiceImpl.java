@@ -1,7 +1,6 @@
 package com.mp.core.service.impl;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mp.core.entity.Role;
 import com.mp.core.entity.User;
+import com.mp.core.exception.BusinessValidationException;
+import com.mp.core.exception.DuplicateResourceException;
+import com.mp.core.exception.ResourceNotFoundException;
 import com.mp.core.repository.RoleRepository;
 import com.mp.core.repository.UserRepository;
 import com.mp.core.service.UserService;
@@ -41,17 +43,17 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) {
         if (userRepo.existsByUsername(user.getUsername())) {
             log.warn("Username {} is already taken", user.getUsername());
-            throw new IllegalArgumentException("This username is not available");
+            throw new DuplicateResourceException("User", "username", user.getUsername());
         }
         
         String email = user.getEmail();
         if (email == null || !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            throw new IllegalArgumentException("Invalid email format");
+            throw new BusinessValidationException("Invalid email format");
         }
         
         if (userRepo.existsByEmail(email)) {
             log.warn("Email {} is already registered", email);
-            throw new IllegalArgumentException("This email is already registered");
+            throw new DuplicateResourceException("User", "email", email);
         }
 
         if (user.getPassword() != null) {
@@ -68,12 +70,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User updateUser(User user) {
         User existing = userRepo.findById(user.getUserId())
-            .orElseThrow(() -> new NoSuchElementException("User not found: " + user.getUserId()));
+            .orElseThrow(() -> new ResourceNotFoundException("User", user.getUserId()));
         
         String newUsername = user.getUsername();
         if (!existing.getUsername().equals(newUsername)) {
             if (userRepo.existsByUsername(newUsername)) {
-                throw new IllegalArgumentException("Username already taken");
+                throw new DuplicateResourceException("User", "username", newUsername);
             }
             existing.setUsername(newUsername);
         }
@@ -97,16 +99,11 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String id) {
         if (!userRepo.existsById(id)) {
             log.warn("Attempted to delete non-existent user: {}", id);
-            throw new NoSuchElementException("User not found");
+            throw new ResourceNotFoundException("User", id);
         }
         
-        try {
-            userRepo.deleteById(id);
-            log.info("User {} deleted successfully", id);
-        } catch (Exception e) {
-            log.error("Failed to delete user: " + id, e);
-            throw new RuntimeException("Could not delete user", e);
-        }
+        userRepo.deleteById(id);
+        log.info("User {} deleted successfully", id);
     }
 
     @Override
@@ -131,10 +128,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void assignRoleToUser(String userId, String roleId) {
         User user = userRepo.findById(userId)
-            .orElseThrow(() -> new NoSuchElementException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", userId));
             
         Role role = roleRepo.findById(roleId)
-            .orElseThrow(() -> new NoSuchElementException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", roleId));
 
         if (user.getRoles().contains(role)) {
             log.info("User {} already has role {}", userId, roleId);
@@ -150,10 +147,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void removeRoleFromUser(String userId, String roleId) {
         User user = userRepo.findById(userId)
-            .orElseThrow(() -> new NoSuchElementException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", userId));
             
         Role role = roleRepo.findById(roleId)
-            .orElseThrow(() -> new NoSuchElementException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", roleId));
 
         if (user.getRoles().remove(role)) {
             userRepo.save(user);
@@ -167,10 +164,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User updateUserStatus(String userId, String status) {
         User user = userRepo.findById(userId)
-            .orElseThrow(() -> new NoSuchElementException("User not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User", userId));
             
         if (!isValidStatus(status)) {
-            throw new IllegalArgumentException("Invalid status: " + status);
+            throw new BusinessValidationException("Invalid status: " + status);
         }
 
         user.setStatus(status);
@@ -204,7 +201,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<User> getUsersByStatus(String status) {
         if (!isValidStatus(status)) {
-            throw new IllegalArgumentException("Invalid status filter: " + status);
+            throw new BusinessValidationException("Invalid status filter: " + status);
         }
         return userRepo.findByStatus(status);
     }

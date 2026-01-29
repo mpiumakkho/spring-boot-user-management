@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mp.core.entity.Permission;
 import com.mp.core.entity.Role;
+import com.mp.core.exception.BusinessValidationException;
+import com.mp.core.exception.DuplicateResourceException;
+import com.mp.core.exception.ResourceNotFoundException;
 import com.mp.core.repository.PermissionRepository;
 import com.mp.core.repository.RoleRepository;
 import com.mp.core.service.RoleService;
@@ -36,12 +39,12 @@ public class RoleServiceImpl implements RoleService {
         
         if (roleName == null || roleName.trim().isEmpty()) {
             LOG.warn("Attempt to create role with empty name");
-            throw new IllegalArgumentException("Role name cannot be empty");
+            throw new BusinessValidationException("Role name cannot be empty");
         }
         
         if (roleRepo.existsByName(roleName)) {
             LOG.warn("Role name '{}' already exists", roleName);
-            throw new IllegalArgumentException("Role with this name already exists");
+            throw new DuplicateResourceException("Role", "name", roleName);
         }
 
         role.setName(roleName.toUpperCase());
@@ -56,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
         Role existing = roleRepo.findById(role.getRoleId())
             .orElseThrow(() -> {
                 LOG.warn("Attempt to update non-existent role: {}", role.getRoleId());
-                return new IllegalArgumentException("Role not found");
+                return new ResourceNotFoundException("Role", role.getRoleId());
             });
         
         String newName = role.getName();
@@ -64,7 +67,7 @@ public class RoleServiceImpl implements RoleService {
         if (!existing.getName().equals(newName)) {
             if (roleRepo.existsByName(newName)) {
                 LOG.warn("Role name '{}' is already taken", newName);
-            throw new IllegalArgumentException("Role name already exists");
+                throw new DuplicateResourceException("Role", "name", newName);
             }
             existing.setName(newName.toUpperCase());
         }
@@ -79,28 +82,19 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional
     public void deleteRole(String id) {
-        try {
-            if (!roleRepo.existsById(id)) {
-                LOG.warn("Attempt to delete non-existent role: {}", id);
-                throw new IllegalArgumentException("Role not found");
-            }
-            
-            Optional<Role> role = roleRepo.findById(id);
-            if (role.isPresent() && isSystemRole(role.get().getName())) {
-                LOG.error("Attempt to delete system role: {}", role.get().getName());
-                throw new IllegalStateException("Cannot delete system role");
-            }
-            
-            roleRepo.deleteById(id);
-            LOG.info("Role deleted successfully: {}", id);
-            
-        } catch (Exception e) {
-            if (e instanceof IllegalArgumentException || e instanceof IllegalStateException) {
-                throw e;
-            }
-            LOG.error("Failed to delete role: " + id, e);
-            throw new RuntimeException("Could not delete role", e);
+        if (!roleRepo.existsById(id)) {
+            LOG.warn("Attempt to delete non-existent role: {}", id);
+            throw new ResourceNotFoundException("Role", id);
         }
+        
+        Optional<Role> role = roleRepo.findById(id);
+        if (role.isPresent() && isSystemRole(role.get().getName())) {
+            LOG.error("Attempt to delete system role: {}", role.get().getName());
+            throw new BusinessValidationException("Cannot delete system role");
+        }
+        
+        roleRepo.deleteById(id);
+        LOG.info("Role deleted successfully: {}", id);
     }
 
     private boolean isSystemRole(String roleName) {
@@ -132,13 +126,13 @@ public class RoleServiceImpl implements RoleService {
         Role role = roleRepo.findById(roleId)
             .orElseThrow(() -> {
                 LOG.warn("Role not found: {}", roleId);
-                return new IllegalArgumentException("Role not found");
+                return new ResourceNotFoundException("Role", roleId);
             });
 
         Permission permission = permRepo.findById(permissionId)
             .orElseThrow(() -> {
                 LOG.warn("Permission not found: {}", permissionId);
-                return new IllegalArgumentException("Permission not found");
+                return new ResourceNotFoundException("Permission", permissionId);
             });
 
         if (role.getPermissions().contains(permission)) {
@@ -155,14 +149,14 @@ public class RoleServiceImpl implements RoleService {
     @Transactional
     public void removePermissionFromRole(String roleId, String permissionId) {
         Role role = roleRepo.findById(roleId)
-            .orElseThrow(() -> new IllegalArgumentException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", roleId));
             
         Permission permission = permRepo.findById(permissionId)
-            .orElseThrow(() -> new IllegalArgumentException("Permission not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Permission", permissionId));
 
         if (isSystemRole(role.getName()) && isCriticalPermission(permission)) {
             LOG.warn("Attempt to remove critical permission from system role");
-            throw new IllegalStateException("Cannot remove critical permission from system role");
+            throw new BusinessValidationException("Cannot remove critical permission from system role");
         }
 
         if (role.getPermissions().remove(permission)) {
@@ -185,6 +179,6 @@ public class RoleServiceImpl implements RoleService {
             .map(role -> role.getPermissions().stream()
                 .sorted((p1, p2) -> p1.getName().compareTo(p2.getName()))
                 .collect(Collectors.toList()))
-            .orElseThrow(() -> new IllegalArgumentException("Role not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Role", roleId));
     }
 } 

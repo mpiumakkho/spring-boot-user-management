@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mp.core.entity.Permission;
+import com.mp.core.exception.BusinessValidationException;
+import com.mp.core.exception.DuplicateResourceException;
+import com.mp.core.exception.ResourceNotFoundException;
 import com.mp.core.repository.PermissionRepository;
 import com.mp.core.service.PermissionService;
 
@@ -33,14 +36,14 @@ public class PermissionServiceImpl implements PermissionService {
         // Basic validation
         if (permission.getName() == null || permission.getName().trim().isEmpty()) {
             log.warn("Attempt to create permission with empty name");
-            throw new IllegalArgumentException("Permission name is required");
+            throw new BusinessValidationException("Permission name is required");
         }
 
         // Format validation
         String permName = permission.getName().toLowerCase();
         if (!PERMISSION_PATTERN.matcher(permName).matches()) {
             log.warn("Invalid permission format: {}", permName);
-            throw new IllegalArgumentException(
+            throw new BusinessValidationException(
                 "Permission must be in format 'resource:action' using only letters and underscores"
             );
         }
@@ -48,7 +51,7 @@ public class PermissionServiceImpl implements PermissionService {
         // Check for duplicates
         if (permRepo.existsByName(permName)) {
             log.warn("Permission already exists: {}", permName);
-            throw new IllegalArgumentException("This permission already exists");
+            throw new DuplicateResourceException("Permission", "name", permName);
         }
 
         // Parse and set resource/action
@@ -68,7 +71,7 @@ public class PermissionServiceImpl implements PermissionService {
         Permission existing = permRepo.findById(permission.getPermissionId())
             .orElseThrow(() -> {
                 log.warn("Attempt to update non-existent permission: {}", permission.getPermissionId());
-                return new IllegalArgumentException("Permission not found");
+                return new ResourceNotFoundException("Permission", permission.getPermissionId());
             });
 
         String newName = permission.getName().toLowerCase();
@@ -76,14 +79,14 @@ public class PermissionServiceImpl implements PermissionService {
         // If name is changing, validate new name
         if (!existing.getName().equals(newName)) {
             if (!PERMISSION_PATTERN.matcher(newName).matches()) {
-                throw new IllegalArgumentException(
+                throw new BusinessValidationException(
                     "Permission must be in format 'resource:action' using only letters and underscores"
                 );
             }
             
             if (permRepo.existsByName(newName)) {
                 log.warn("Permission name conflict: {}", newName);
-                throw new IllegalArgumentException("This permission name is already taken");
+                throw new DuplicateResourceException("Permission", "name", newName);
             }
 
             String[] parts = newName.split(":");
@@ -106,29 +109,20 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     @Transactional
     public void deletePermission(String id) {
-        try {
-            if (!permRepo.existsById(id)) {
-                log.warn("Attempt to delete non-existent permission: {}", id);
-                throw new IllegalArgumentException("Permission not found");
-            }
-
-            // Check if this is a system permission
-            Optional<Permission> perm = permRepo.findById(id);
-            if (perm.isPresent() && isSystemPermission(perm.get())) {
-                log.error("Attempt to delete system permission: {}", perm.get().getName());
-                throw new IllegalStateException("Cannot delete system permission");
-            }
-
-            permRepo.deleteById(id);
-            log.info("Permission deleted: {}", id);
-            
-        } catch (Exception e) {
-            if (e instanceof IllegalArgumentException || e instanceof IllegalStateException) {
-                throw e;
-            }
-            log.error("Failed to delete permission: " + id, e);
-            throw new RuntimeException("Could not delete permission", e);
+        if (!permRepo.existsById(id)) {
+            log.warn("Attempt to delete non-existent permission: {}", id);
+            throw new ResourceNotFoundException("Permission", id);
         }
+
+        // Check if this is a system permission
+        Optional<Permission> perm = permRepo.findById(id);
+        if (perm.isPresent() && isSystemPermission(perm.get())) {
+            log.error("Attempt to delete system permission: {}", perm.get().getName());
+            throw new BusinessValidationException("Cannot delete system permission");
+        }
+
+        permRepo.deleteById(id);
+        log.info("Permission deleted: {}", id);
     }
 
     private boolean isSystemPermission(Permission permission) {
@@ -162,7 +156,7 @@ public class PermissionServiceImpl implements PermissionService {
     public List<Permission> getPermissionsByResource(String resource) {
         if (resource == null || resource.trim().isEmpty()) {
             log.warn("Attempt to search permissions with empty resource");
-            throw new IllegalArgumentException("Resource name is required");
+            throw new BusinessValidationException("Resource name is required");
         }
         return permRepo.findByResource(resource.toLowerCase());
     }
@@ -171,10 +165,10 @@ public class PermissionServiceImpl implements PermissionService {
     @Transactional(readOnly = true)
     public List<Permission> getPermissionsByResourceAndAction(String resource, String action) {
         if (resource == null || resource.trim().isEmpty()) {
-            throw new IllegalArgumentException("Resource name is required");
+            throw new BusinessValidationException("Resource name is required");
         }
         if (action == null || action.trim().isEmpty()) {
-            throw new IllegalArgumentException("Action name is required");
+            throw new BusinessValidationException("Action name is required");
         }
         
         return permRepo.findByResourceAndAction(
