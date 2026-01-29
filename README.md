@@ -60,9 +60,9 @@ A comprehensive Spring Boot application implementing Role-Based Access Control (
 ### Developer Experience
 - **Docker Support**: Full Docker Compose setup with PostgreSQL
 - **API Documentation**: Swagger UI with detailed endpoint descriptions
-- **Comprehensive Logging**: Log4j2 with proper log levels
+- **Comprehensive Logging**: SLF4J with Logback (migrated from Log4j2)
 - **Unit Tests**: Full test coverage for services and controllers
-- **8+ Documentation Files**: Step-by-step guides for all components
+- **Local Documentation**: 33+ comprehensive guides (kept in local `/documentation` folder, not in repository)
 
 ## Architecture
 
@@ -120,7 +120,7 @@ A comprehensive Spring Boot application implementing Role-Based Access Control (
 - Spring Data JPA
 - PostgreSQL 16
 - BCrypt Password Encoder
-- Log4j2
+- SLF4J with Logback (Lombok @Slf4j)
 - Lombok
 - Swagger UI / OpenAPI
 
@@ -147,33 +147,55 @@ spring-boot-user-management/
 │   │   │   ├── java/com/mp/core/
 │   │   │   │   ├── config/      # SecurityConfig.java
 │   │   │   │   ├── controller/  # REST Controllers
+│   │   │   │   ├── dto/         # Data Transfer Objects
 │   │   │   │   ├── entity/      # JPA Entities
 │   │   │   │   ├── exception/   # Custom Exceptions
 │   │   │   │   ├── repository/  # JPA Repositories
 │   │   │   │   ├── security/    # TokenFilter, PermissionEvaluator
-│   │   │   │   └── service/     # Business Logic
+│   │   │   │   ├── service/     # Business Logic
+│   │   │   │   ├── util/        # Utility Classes
+│   │   │   │   └── validation/  # Custom Validators
 │   │   │   └── resources/
-│   │   │       └── application.properties
+│   │   │       ├── application.properties
+│   │   │       ├── application-dev.properties
+│   │   │       └── application-docker.properties
 │   │   └── test/                # Unit Tests
+│   ├── Dockerfile
 │   └── pom.xml
 │
 ├── web-api/                     # Frontend UI Service
 │   ├── src/
 │   │   ├── main/
 │   │   │   ├── java/com/mp/web/
+│   │   │   │   ├── config/      # Configuration Classes
 │   │   │   │   ├── controller/  # MVC Controllers
-│   │   │   │   ├── service/     # UserWebService, RoleWebService, etc.
-│   │   │   │   ├── exception/   # CoreApiClientException, etc.
 │   │   │   │   ├── dto/         # Data Transfer Objects
+│   │   │   │   ├── exception/   # CoreApiClientException, etc.
+│   │   │   │   ├── mapper/      # Object Mappers
+│   │   │   │   ├── model/       # Domain Models
+│   │   │   │   ├── security/    # Session Security
+│   │   │   │   ├── service/     # UserWebService, RoleWebService, etc.
 │   │   │   │   └── utils/       # Utility Classes
 │   │   │   └── resources/
 │   │   │       ├── templates/   # Thymeleaf Templates
+│   │   │       │   ├── auth/    # Login pages
+│   │   │   │       ├── dashboard/  # Dashboard
+│   │   │       │   ├── layouts/ # Base layouts
+│   │   │       │   ├── permissions/  # Permission CRUD
+│   │   │       │   ├── roles/   # Role CRUD
+│   │   │       │   └── users/   # User CRUD
 │   │   │       ├── static/      # CSS, JS
-│   │   │       └── application.properties
+│   │   │       │   ├── css/     # theme.css, custom.css, dark-mode.css
+│   │   │       │   └── js/      # custom.js, dark-mode.js, fast-table.js
+│   │   │       ├── application.properties
+│   │   │       ├── application-dev.properties
+│   │   │       └── application-docker.properties
 │   │   └── test/                # Unit Tests
+│   ├── Dockerfile
 │   └── pom.xml
 │
-├── documentation/               # Comprehensive Guides
+├── documentation/               # ⚠️ Local Only (Not in Git Repository)
+│   │                            # 33+ comprehensive guides including:
 │   ├── guide_exception_handling.md
 │   ├── guide_frontend_exception_handling.md
 │   ├── guide_token_authentication.md
@@ -181,9 +203,23 @@ spring-boot-user-management/
 │   ├── guide_security_configuration.md
 │   ├── guide_web_services_and_controllers.md
 │   ├── guide_refactoring_legacy_code.md
-│   └── docker-database-setup-guide.md
+│   ├── guide_testing_and_documentation.md
+│   ├── guide_logging_best_practices.md
+│   ├── guide_purple_theme_design_system.md
+│   ├── docker-database-setup-guide.md
+│   └── ... (22+ more guides on advanced topics)
 │
+├── docs/                        # Screenshots & Assets
+│   └── images/
+│       ├── login.png
+│       ├── dashboard.png
+│       ├── user-management.png
+│       └── roles-management.png
+│
+├── .dockerignore
+├── .gitignore                   # Ignores: documentation/, .idea/, target/, etc.
 ├── docker-compose.yml           # Docker Compose Configuration
+├── init-db.sql                  # Database initialization script
 └── README.md
 ```
 
@@ -468,23 +504,75 @@ class ServiceTest {
 
 ## Documentation
 
-Comprehensive documentation is available in the `documentation/` folder:
+⚠️ **Important Note**: The `documentation/` folder is kept **locally only** and is excluded from the Git repository via `.gitignore`. This folder contains **33+ comprehensive guides** covering all aspects of the system.
 
+### Key Documentation Files (Available Locally)
+
+**Core RBAC System:**
 1. **guide_exception_handling.md** - Core API exception handling architecture
 2. **guide_frontend_exception_handling.md** - Web API exception handling
 3. **guide_token_authentication.md** - TokenFilter implementation guide
 4. **guide_custom_permission_evaluator.md** - PermissionEvaluator detailed guide
 5. **guide_security_configuration.md** - Complete security configuration
+
+**Architecture & Patterns:**
 6. **guide_web_services_and_controllers.md** - Service layer pattern
 7. **guide_refactoring_legacy_code.md** - Migration from legacy code
-8. **docker-database-setup-guide.md** - Docker setup instructions
+8. **guide_testing_and_documentation.md** - Unit testing strategy
+9. **guide_dto_projection_patterns.md** - DTO and projection patterns
+10. **guide_entity_fetching_strategies.md** - JPA fetching strategies
+
+**Performance & Optimization:**
+11. **guide_lazy_vs_eager_loading.md** - Loading strategies
+12. **guide_pagination_patterns.md** - Pagination best practices
+13. **guide_batch_operations.md** - Batch processing
+14. **guide_specification_patterns.md** - Dynamic query building
+15. **guide_common_performance_pitfalls.md** - Performance anti-patterns
+
+**Development Best Practices:**
+16. **guide_logging_best_practices.md** - SLF4J logging with Lombok
+17. **guide_if_else_best_practice.md** - Code quality patterns
+18. **guide_spring_annotations.md** - Spring framework annotations
+19. **guide_unit_testing.md** - Testing strategies
+
+**DevOps & Deployment:**
+20. **docker-database-setup-guide.md** - Docker setup instructions
+21. **guide_docker_basics.md** - Docker fundamentals
+22. **README-DOCKER.md** - Docker deployment guide
+
+**UI & Frontend:**
+23. **guide_purple_theme_design_system.md** - Purple theme implementation
+24. **guide_frontend_integration_ng.md** - Frontend integration patterns
+
+**Advanced Topics:**
+25. **guide_master_level_audit_logging.md** - Audit logging system
+26. **guide_master_level_profiles_config.md** - Spring profiles configuration
+27. **guide_master_level_reporting_jasper.md** - Jasper Reports integration
+28. **guide_master_level_resilient_integration.md** - Resilient integration patterns
+29. **RBAC_ARCHITECTURE.md** - Complete RBAC architecture overview
+
+**API Documentation:**
+30. **guide_api_documentation.md** - API documentation standards
+31. **guide_security_basics.md** - Security fundamentals
+32. **guide_master_index.md** - Master documentation index
 
 Each guide includes:
-- Architecture diagrams
-- Step-by-step implementation
-- Code examples
-- Best practices
-- Troubleshooting tips
+- ✅ Architecture diagrams
+- ✅ Step-by-step implementation (Thai & English)
+- ✅ Code examples with explanations
+- ✅ Best practices and anti-patterns
+- ✅ Troubleshooting tips
+- ✅ Before/After comparisons
+
+### Why Documentation is Local Only
+
+The documentation folder is excluded from Git because:
+- 📝 Contains detailed proprietary implementation guides
+- 🔄 Updated frequently during development
+- 📚 Large size (combined ~2MB+ of markdown)
+- 🔐 May contain sensitive implementation details
+
+To regenerate or access documentation, refer to commit history or maintain your own local copy.
 
 ## UI Screenshots
 
