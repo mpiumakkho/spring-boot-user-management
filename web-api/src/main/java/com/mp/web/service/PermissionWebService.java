@@ -44,7 +44,7 @@ public class PermissionWebService {
             LOG.error("Failed to get permissions: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูล permissions ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions",
                 ex
             );
@@ -73,7 +73,7 @@ public class PermissionWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูล permission ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions",
                 ex
             );
@@ -129,7 +129,7 @@ public class PermissionWebService {
             LOG.error("Client error creating permission: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถสร้าง permission ได้ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions/create",
                 ex
             );
@@ -138,7 +138,7 @@ public class PermissionWebService {
             LOG.error("Server error creating permission: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions/create",
                 ex
             );
@@ -193,7 +193,7 @@ public class PermissionWebService {
             LOG.error("Client error updating permission {}: {}", permissionId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถแก้ไขข้อมูลได้ กรุณาตรวจสอบอีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions/" + permissionId + "/edit",
                 ex
             );
@@ -202,7 +202,7 @@ public class PermissionWebService {
             LOG.error("Server error updating permission {}: {}", permissionId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions/" + permissionId + "/edit",
                 ex
             );
@@ -245,7 +245,7 @@ public class PermissionWebService {
             LOG.error("Client error deleting permission {}: {}", permissionId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถลบ permission ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions",
                 ex
             );
@@ -254,7 +254,7 @@ public class PermissionWebService {
             LOG.error("Server error deleting permission {}: {}", permissionId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions",
                 ex
             );
@@ -276,7 +276,7 @@ public class PermissionWebService {
             LOG.error("Failed to search permissions: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถค้นหา permissions ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions",
                 ex
             );
@@ -298,7 +298,7 @@ public class PermissionWebService {
             LOG.error("Failed to search permissions: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถค้นหา permissions ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/permissions",
                 ex
             );

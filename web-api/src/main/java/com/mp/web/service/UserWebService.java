@@ -44,7 +44,7 @@ public class UserWebService {
             LOG.error("Failed to get users: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูลผู้ใช้ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users",
                 ex
             );
@@ -73,7 +73,7 @@ public class UserWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูลผู้ใช้ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users",
                 ex
             );
@@ -133,7 +133,7 @@ public class UserWebService {
             LOG.error("Client error creating user: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถสร้างผู้ใช้ได้ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users/new",
                 ex
             );
@@ -143,7 +143,7 @@ public class UserWebService {
             LOG.error("Server error creating user: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users/new",
                 ex
             );
@@ -198,7 +198,7 @@ public class UserWebService {
             LOG.error("Client error updating user {}: {}", userId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถแก้ไขข้อมูลได้ กรุณาตรวจสอบอีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users/" + userId + "/edit",
                 ex
             );
@@ -207,7 +207,7 @@ public class UserWebService {
             LOG.error("Server error updating user {}: {}", userId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users/" + userId + "/edit",
                 ex
             );
@@ -250,7 +250,7 @@ public class UserWebService {
             LOG.error("Client error deleting user {}: {}", userId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถลบผู้ใช้ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users",
                 ex
             );
@@ -259,7 +259,7 @@ public class UserWebService {
             LOG.error("Server error deleting user {}: {}", userId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users",
                 ex
             );
@@ -285,7 +285,7 @@ public class UserWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถเปิดใช้งานผู้ใช้ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users",
                 ex
             );
@@ -311,7 +311,7 @@ public class UserWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถปิดใช้งานผู้ใช้ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users",
                 ex
             );
@@ -348,7 +348,7 @@ public class UserWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถกำหนดบทบาทได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users/" + userId,
                 ex
             );
@@ -377,7 +377,7 @@ public class UserWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถลบบทบาทได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/users/" + userId,
                 ex
             );

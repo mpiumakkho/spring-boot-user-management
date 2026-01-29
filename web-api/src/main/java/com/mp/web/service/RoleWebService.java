@@ -44,7 +44,7 @@ public class RoleWebService {
             LOG.error("Failed to get roles: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูล roles ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles",
                 ex
             );
@@ -73,7 +73,7 @@ public class RoleWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูล role ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles",
                 ex
             );
@@ -129,7 +129,7 @@ public class RoleWebService {
             LOG.error("Client error creating role: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถสร้าง role ได้ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles/create",
                 ex
             );
@@ -138,7 +138,7 @@ public class RoleWebService {
             LOG.error("Server error creating role: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles/create",
                 ex
             );
@@ -193,7 +193,7 @@ public class RoleWebService {
             LOG.error("Client error updating role {}: {}", roleId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถแก้ไขข้อมูลได้ กรุณาตรวจสอบอีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles/" + roleId + "/edit",
                 ex
             );
@@ -202,7 +202,7 @@ public class RoleWebService {
             LOG.error("Server error updating role {}: {}", roleId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles/" + roleId + "/edit",
                 ex
             );
@@ -245,7 +245,7 @@ public class RoleWebService {
             LOG.error("Client error deleting role {}: {}", roleId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถลบ role ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles",
                 ex
             );
@@ -254,7 +254,7 @@ public class RoleWebService {
             LOG.error("Server error deleting role {}: {}", roleId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles",
                 ex
             );
@@ -283,7 +283,7 @@ public class RoleWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูล permissions ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles/" + roleId,
                 ex
             );
@@ -320,7 +320,7 @@ public class RoleWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถกำหนด permission ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles/" + roleId,
                 ex
             );
@@ -349,7 +349,7 @@ public class RoleWebService {
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
             throw new CoreApiClientException(
                 "ไม่สามารถลบ permission ได้",
-                ex.getStatusCode(),
+                HttpStatus.resolve(ex.getStatusCode().value()),
                 "/roles/" + roleId,
                 ex
             );
