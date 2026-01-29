@@ -17,7 +17,13 @@ import com.mp.web.service.CoreApiService;
 
 /**
  * Implementation of CoreApiService that makes HTTP calls to the Core API.
+ * 
+ * @deprecated This generic service has been replaced by dedicated services with better error handling.
+ *             Use {@link com.mp.web.service.UserWebService}, {@link com.mp.web.service.RoleWebService},
+ *             or {@link com.mp.web.service.PermissionWebService} instead.
+ *             This implementation is kept for backward compatibility only.
  */
+@Deprecated(since = "1.1.0", forRemoval = false)
 @Service
 public class CoreApiServiceImpl implements CoreApiService {
 

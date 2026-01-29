@@ -6,7 +6,13 @@ import java.util.Map;
 /**
  * Service interface for making calls to the Core API.
  * Abstracts all HTTP communication details from controllers.
+ * 
+ * @deprecated This generic service has been replaced by dedicated services:
+ *             {@link UserWebService}, {@link RoleWebService}, {@link PermissionWebService}.
+ *             Use the dedicated services for better error handling and maintainability.
+ *             This interface is kept for backward compatibility only.
  */
+@Deprecated(since = "1.1.0", forRemoval = false)
 public interface CoreApiService {
     // User operations
     List<Map<String, Object>> getAllUsers();
