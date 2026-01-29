@@ -13,6 +13,7 @@ import com.mp.core.service.UserSessionService;
 
 @RestController
 @RequestMapping("/api/sessions")
+@Slf4j
 public class SessionController {    private final UserSessionService sessionService;
     
     public SessionController(UserSessionService sessionService) {

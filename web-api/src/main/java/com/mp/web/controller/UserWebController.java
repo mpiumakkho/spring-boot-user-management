@@ -15,8 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mp.web.dto.RoleDto;
 import com.mp.web.dto.UserDto;
-import com.mp.web.exception.FormSubmissionException;
-import com.mp.web.exception.WebApiException;
 import com.mp.web.mapper.DtoMapper;
 import com.mp.web.service.UserWebService;
 import com.mp.web.service.RoleWebService;
@@ -26,6 +24,7 @@ import com.mp.web.service.RoleWebService;
  * Lets staff create, view, update and delete system users.
  * Uses dedicated services with comprehensive error handling.
  */
+@Slf4j
 @Controller
 @RequestMapping("/users")
 public class UserWebController {    private static final String CURRENT_PATH = "/users";

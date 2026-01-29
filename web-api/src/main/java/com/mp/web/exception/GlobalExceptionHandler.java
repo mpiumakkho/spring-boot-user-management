@@ -12,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * Handles both UI-specific and core-api errors.
  */
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
     /**
      * Handle errors from core-api calls

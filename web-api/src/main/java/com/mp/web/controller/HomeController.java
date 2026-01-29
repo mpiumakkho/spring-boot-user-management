@@ -83,7 +83,7 @@ public class HomeController {
         try {
             stats.put("totalRoles", roleWebService.getAllRoles().size());
         } catch (Exception e) {
-            LOG.warn("Could not fetch roles count: {}", e.getMessage());
+            log.warn("Could not fetch roles count: {}", e.getMessage());
             stats.put("totalRoles", 0);
         }
 
