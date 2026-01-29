@@ -1,10 +1,10 @@
 package com.mp.core.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +18,9 @@ import com.mp.core.repository.RoleRepository;
 import com.mp.core.repository.UserRepository;
 import com.mp.core.service.UserService;
 
+@Slf4j
 @Service
-public class UserServiceImpl implements UserService {
-
-    private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
-    
+public class UserServiceImpl implements UserService {    
     private final UserRepository userRepo;
     private final RoleRepository roleRepo;
     private final PasswordEncoder encoder;

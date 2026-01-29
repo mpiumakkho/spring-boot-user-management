@@ -1,11 +1,11 @@
 package com.mp.core.controller;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +31,10 @@ import com.mp.core.util.RoleEncryptor;
 
 import jakarta.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
-    private static final Logger log = LogManager.getLogger(UserController.class);
-
     private final UserService userService;
     private final PasswordEncoder pwdEncoder;
     private final UserSessionService sessionService;

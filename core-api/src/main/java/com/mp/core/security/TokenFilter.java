@@ -1,13 +1,13 @@
 package com.mp.core.security;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -43,11 +43,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * 5. Set authentication in SecurityContext
  * 6. Update session activity timestamp
  */
+@Slf4j
 @Component
-public class TokenFilter extends OncePerRequestFilter {
-
-    private static final Logger LOG = LogManager.getLogger(TokenFilter.class);
-    private static final String AUTHORIZATION_HEADER = "Authorization";
+public class TokenFilter extends OncePerRequestFilter {    private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final UserSessionService sessionService;
@@ -78,7 +76,7 @@ public class TokenFilter extends OncePerRequestFilter {
                 authenticateToken(token, request);
             }
         } catch (Exception e) {
-            LOG.error("Cannot set user authentication: {}", e.getMessage(), e);
+            log.error("Cannot set user authentication: {}", e.getMessage(), e);
         }
 
         filterChain.doFilter(request, response);
@@ -103,32 +101,32 @@ public class TokenFilter extends OncePerRequestFilter {
     private void authenticateToken(String token, HttpServletRequest request) {
         // Validate session
         if (!sessionService.isSessionValid(token)) {
-            LOG.debug("Invalid or expired token");
+            log.debug("Invalid or expired token");
             return;
         }
 
         // Get session and user
         UserSession session = sessionRepository.findByToken(token).orElse(null);
         if (session == null) {
-            LOG.warn("Session not found for valid token");
+            log.warn("Session not found for valid token");
             return;
         }
 
         String userId = session.getUserId();
         if (userId == null) {
-            LOG.warn("Session has no userId: sessionId={}", session.getSessionId());
+            log.warn("Session has no userId: sessionId={}", session.getSessionId());
             return;
         }
         
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
-            LOG.warn("User not found for session: userId={}", userId);
+            log.warn("User not found for session: userId={}", userId);
             return;
         }
 
         // Check user status
         if (!"active".equals(user.getStatus())) {
-            LOG.warn("User is not active: userId={}, status={}", user.getUserId(), user.getStatus());
+            log.warn("User is not active: userId={}, status={}", user.getUserId(), user.getStatus());
             return;
         }
 
@@ -147,7 +145,7 @@ public class TokenFilter extends OncePerRequestFilter {
         // Set authentication in security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
         
-        LOG.debug("User authenticated: username={}, authorities={}", 
+        log.debug("User authenticated: username={}, authorities={}", 
             user.getUsername(), authorities.size());
 
         // Update session activity

@@ -1,9 +1,9 @@
 package com.mp.core.security;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.Serializable;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,11 +27,9 @@ import org.springframework.stereotype.Component;
  * - @PreAuthorize("hasPermission(null, 'ROLE:CREATE')")
  *   → Checks for authority: PERM_ROLE:CREATE
  */
+@Slf4j
 @Component
-public class CustomPermissionEvaluator implements PermissionEvaluator {
-
-    private static final Logger LOG = LogManager.getLogger(CustomPermissionEvaluator.class);
-    private static final String PERMISSION_PREFIX = "PERM_";
+public class CustomPermissionEvaluator implements PermissionEvaluator {    private static final String PERMISSION_PREFIX = "PERM_";
 
     /**
      * Evaluate permission for domain object.
@@ -49,13 +47,13 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
             Object permission
     ) {
         if (authentication == null || permission == null) {
-            LOG.debug("Authentication or permission is null");
+            log.debug("Authentication or permission is null");
             return false;
         }
 
         // Check if user is authenticated
         if (!authentication.isAuthenticated()) {
-            LOG.debug("User is not authenticated");
+            log.debug("User is not authenticated");
             return false;
         }
 
@@ -64,7 +62,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
         
         // Validate permission format (RESOURCE:ACTION)
         if (!isValidPermissionFormat(permissionString)) {
-            LOG.warn("Invalid permission format: {}. Expected format: RESOURCE:ACTION", permissionString);
+            log.warn("Invalid permission format: {}. Expected format: RESOURCE:ACTION", permissionString);
             return false;
         }
 
@@ -77,10 +75,10 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
             .anyMatch(authority -> authority.equals(requiredAuthority));
 
         if (hasPermission) {
-            LOG.debug("Permission granted: user={}, permission={}", 
+            log.debug("Permission granted: user={}, permission={}", 
                 authentication.getName(), permissionString);
         } else {
-            LOG.debug("Permission denied: user={}, permission={}, authorities={}", 
+            log.debug("Permission denied: user={}, permission={}, authorities={}", 
                 authentication.getName(), permissionString, 
                 authentication.getAuthorities().size());
         }
@@ -109,12 +107,12 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
             Object permission
     ) {
         if (authentication == null || targetType == null || permission == null) {
-            LOG.debug("Authentication, targetType, or permission is null");
+            log.debug("Authentication, targetType, or permission is null");
             return false;
         }
 
         if (!authentication.isAuthenticated()) {
-            LOG.debug("User is not authenticated");
+            log.debug("User is not authenticated");
             return false;
         }
 
@@ -126,7 +124,7 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
         // Validate format
         if (!isValidPermissionFormat(permissionString)) {
-            LOG.warn("Invalid permission format: {}. Expected format: RESOURCE:ACTION", permissionString);
+            log.warn("Invalid permission format: {}. Expected format: RESOURCE:ACTION", permissionString);
             return false;
         }
 
@@ -139,10 +137,10 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
             .anyMatch(authority -> authority.equals(requiredAuthority));
 
         if (hasPermission) {
-            LOG.debug("Permission granted: user={}, targetId={}, permission={}", 
+            log.debug("Permission granted: user={}, targetId={}, permission={}", 
                 authentication.getName(), targetId, permissionString);
         } else {
-            LOG.debug("Permission denied: user={}, targetId={}, permission={}", 
+            log.debug("Permission denied: user={}, targetId={}, permission={}", 
                 authentication.getName(), targetId, permissionString);
         }
 

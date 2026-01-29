@@ -24,11 +24,10 @@ import jakarta.servlet.http.HttpSession;
  * Provides REST APIs for user and role management.
  * Works as a bridge between frontend and core API.
  */
+@Slf4j
 @RestController
 @RequestMapping("/apis/user")
 public class UserController {
-
-    private final static Logger LOG = LogManager.getLogger(UserController.class);
 
     @Value("${core.api.url}")
     private String coreApiServer;

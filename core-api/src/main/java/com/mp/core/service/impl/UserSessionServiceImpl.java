@@ -1,12 +1,12 @@
 package com.mp.core.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,9 @@ import com.mp.core.entity.UserSession;
 import com.mp.core.repository.UserSessionRepository;
 import com.mp.core.service.UserSessionService;
 
+@Slf4j
 @Service
-public class UserSessionServiceImpl implements UserSessionService {
-    
-    private static final Logger log = LogManager.getLogger(UserSessionServiceImpl.class);
-    
+public class UserSessionServiceImpl implements UserSessionService {    
     @Value("${core.session.timeout-minutes:30}")
     private long sessionTimeoutMinutes;
     
