@@ -1,9 +1,9 @@
 package com.mp.web.controller;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,7 +45,7 @@ public class UserController {
             return restTemplate.postForEntity(coreApiServer + "/api/users/find-by-id", 
                 "{\"userId\":\"" + request.get("userId") + "\"}", Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -56,7 +56,7 @@ public class UserController {
             return restTemplate.postForEntity(coreApiServer + "/api/users/find-by-username", 
                 "{\"username\":\"" + request.get("username") + "\"}", Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -66,7 +66,7 @@ public class UserController {
         try {
             return restTemplate.getForEntity(coreApiServer + "/api/users", Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -76,7 +76,7 @@ public class UserController {
         try {
             return restTemplate.postForEntity(coreApiServer + "/api/users/create", user, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -87,7 +87,7 @@ public class UserController {
             return restTemplate.exchange(coreApiServer + "/api/users/update", org.springframework.http.HttpMethod.PUT, 
                 new org.springframework.http.HttpEntity<>(user), Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -98,7 +98,7 @@ public class UserController {
             return restTemplate.postForEntity(coreApiServer + "/api/users/delete", 
                 "{\"userId\":\"" + request.get("userId") + "\"}", Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -109,7 +109,7 @@ public class UserController {
             String jsonBody = "{\"userId\":\"" + request.get("userId") + "\",\"roleId\":\"" + request.get("roleId") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/users/assign-role", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -120,7 +120,7 @@ public class UserController {
             String jsonBody = "{\"userId\":\"" + request.get("userId") + "\",\"roleId\":\"" + request.get("roleId") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/users/remove-role", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -131,7 +131,7 @@ public class UserController {
             String jsonBody = "{\"userId\":\"" + request.get("userId") + "\",\"status\":\"" + request.get("status") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/users/update-status", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -143,7 +143,7 @@ public class UserController {
         try {
             return restTemplate.getForEntity(coreApiServer + "/api/roles", Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -154,7 +154,7 @@ public class UserController {
             String jsonBody = "{\"roleId\":\"" + request.get("roleId") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/roles/find-by-id", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -165,7 +165,7 @@ public class UserController {
             String jsonBody = "{\"name\":\"" + request.get("name") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/roles/find-by-name", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -175,7 +175,7 @@ public class UserController {
         try {
             return restTemplate.postForEntity(coreApiServer + "/api/roles/create", role, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -186,7 +186,7 @@ public class UserController {
             return restTemplate.exchange(coreApiServer + "/api/roles/update", org.springframework.http.HttpMethod.PUT,
                 new org.springframework.http.HttpEntity<>(role), Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -197,7 +197,7 @@ public class UserController {
             String jsonBody = "{\"roleId\":\"" + request.get("roleId") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/roles/delete", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -208,7 +208,7 @@ public class UserController {
             String jsonBody = "{\"roleId\":\"" + request.get("roleId") + "\",\"permissionId\":\"" + request.get("permissionId") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/roles/assign-permission", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -219,7 +219,7 @@ public class UserController {
             String jsonBody = "{\"roleId\":\"" + request.get("roleId") + "\",\"permissionId\":\"" + request.get("permissionId") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/roles/remove-permission", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -230,7 +230,7 @@ public class UserController {
             String jsonBody = "{\"roleId\":\"" + request.get("roleId") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/roles/get-permissions", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -242,7 +242,7 @@ public class UserController {
         try {
             return restTemplate.getForEntity(coreApiServer + "/api/permissions", Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -253,7 +253,7 @@ public class UserController {
             String jsonBody = "{\"permissionId\":\"" + request.get("permissionId") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/permissions/find-by-id", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -264,7 +264,7 @@ public class UserController {
             String jsonBody = "{\"name\":\"" + request.get("name") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/permissions/find-by-name", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -275,7 +275,7 @@ public class UserController {
             String jsonBody = "{\"resource\":\"" + request.get("resource") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/permissions/find-by-resource", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -286,7 +286,7 @@ public class UserController {
             String jsonBody = "{\"resource\":\"" + request.get("resource") + "\",\"action\":\"" + request.get("action") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/permissions/find-by-resource-and-action", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -296,7 +296,7 @@ public class UserController {
         try {
             return restTemplate.postForEntity(coreApiServer + "/api/permissions/create", permission, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -307,7 +307,7 @@ public class UserController {
             return restTemplate.exchange(coreApiServer + "/api/permissions/update", org.springframework.http.HttpMethod.PUT,
                 new org.springframework.http.HttpEntity<>(permission), Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -318,7 +318,7 @@ public class UserController {
             String jsonBody = "{\"permissionId\":\"" + request.get("permissionId") + "\"}";
             return restTemplate.postForEntity(coreApiServer + "/api/permissions/delete", jsonBody, Object.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Error calling core-api: " + e.getMessage());
+            // log.error("Error calling core-api: " + e.getMessage());
             return ResponseEntity.status(e.getStatusCode()).body("Core API Error: " + e.getMessage());
         }
     }
@@ -329,7 +329,7 @@ public class UserController {
         try {
             return restTemplate.getForEntity(coreApiServer + "/api/health", String.class);
         } catch (RestClientResponseException e) {
-            // LOG.error("Core API not available: " + e.getMessage());
+            // log.error("Core API not available: " + e.getMessage());
             return ResponseEntity.ok("Web API: OK, Core API: DOWN");
         }
     }

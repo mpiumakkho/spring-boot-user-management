@@ -3,8 +3,6 @@ package com.mp.web.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,17 +17,18 @@ import com.mp.web.exception.WebApiException;
 import com.mp.web.mapper.DtoMapper;
 import com.mp.web.service.PermissionWebService;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Manages all permission-related web pages and forms.
  * Lets staff create, view, update and delete system permissions.
  * Permissions define what actions can be performed on resources.
  * Uses dedicated services with comprehensive error handling.
  */
+@Slf4j
 @Controller
 @RequestMapping("/permissions")
 public class PermissionWebController {
-
-    private static final Logger LOG = LogManager.getLogger(PermissionWebController.class);
     private static final String CURRENT_PATH = "/permissions";
 
     private final PermissionWebService permissionWebService;

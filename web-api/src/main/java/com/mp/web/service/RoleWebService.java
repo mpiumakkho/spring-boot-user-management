@@ -1,8 +1,8 @@
 package com.mp.web.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.mp.web.exception.CoreApiClientException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -18,11 +18,9 @@ import java.util.Map;
  * Service layer for Role operations via core-api
  * Handles REST calls and translates exceptions to user-friendly messages
  */
+@Slf4j
 @Service
-public class RoleWebService {
-    
-    private static final Logger LOG = LogManager.getLogger(RoleWebService.class);
-    
+public class RoleWebService {    
     @Autowired
     private RestTemplate restTemplate;
     
@@ -41,7 +39,7 @@ public class RoleWebService {
             return response.getBody();
             
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            LOG.error("Failed to get roles: {}", ex.getMessage());
+            log.error("Failed to get roles: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูล roles ได้",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -96,11 +94,11 @@ public class RoleWebService {
                 Map.class
             );
             
-            LOG.info("Role created successfully");
+            log.info("Role created successfully");
             return response.getBody();
             
         } catch (HttpClientErrorException.BadRequest ex) {
-            LOG.warn("Validation error creating role: {}", ex.getResponseBodyAsString());
+            log.warn("Validation error creating role: {}", ex.getResponseBodyAsString());
             throw new CoreApiClientException(
                 "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง",
                 HttpStatus.BAD_REQUEST,
@@ -109,7 +107,7 @@ public class RoleWebService {
             );
             
         } catch (HttpClientErrorException.Conflict ex) {
-            LOG.warn("Duplicate role: {}", ex.getResponseBodyAsString());
+            log.warn("Duplicate role: {}", ex.getResponseBodyAsString());
             throw new CoreApiClientException(
                 "ชื่อ role นี้มีอยู่แล้ว",
                 HttpStatus.CONFLICT,
@@ -126,7 +124,7 @@ public class RoleWebService {
             );
             
         } catch (HttpClientErrorException ex) {
-            LOG.error("Client error creating role: {}", ex.getMessage());
+            log.error("Client error creating role: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถสร้าง role ได้ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -135,7 +133,7 @@ public class RoleWebService {
             );
             
         } catch (HttpServerErrorException ex) {
-            LOG.error("Server error creating role: {}", ex.getMessage());
+            log.error("Server error creating role: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -162,7 +160,7 @@ public class RoleWebService {
                 Map.class
             );
             
-            LOG.info("Role {} updated successfully", roleId);
+            log.info("Role {} updated successfully", roleId);
             return response.getBody();
             
         } catch (HttpClientErrorException.NotFound ex) {
@@ -190,7 +188,7 @@ public class RoleWebService {
             );
             
         } catch (HttpClientErrorException ex) {
-            LOG.error("Client error updating role {}: {}", roleId, ex.getMessage());
+            log.error("Client error updating role {}: {}", roleId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถแก้ไขข้อมูลได้ กรุณาตรวจสอบอีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -199,7 +197,7 @@ public class RoleWebService {
             );
             
         } catch (HttpServerErrorException ex) {
-            LOG.error("Server error updating role {}: {}", roleId, ex.getMessage());
+            log.error("Server error updating role {}: {}", roleId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -215,7 +213,7 @@ public class RoleWebService {
     public void deleteRole(String roleId) {
         try {
             restTemplate.delete(coreApiUrl + "/api/roles/" + roleId);
-            LOG.info("Role {} deleted successfully", roleId);
+            log.info("Role {} deleted successfully", roleId);
             
         } catch (HttpClientErrorException.NotFound ex) {
             throw new CoreApiClientException(
@@ -242,7 +240,7 @@ public class RoleWebService {
             );
             
         } catch (HttpClientErrorException ex) {
-            LOG.error("Client error deleting role {}: {}", roleId, ex.getMessage());
+            log.error("Client error deleting role {}: {}", roleId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถลบ role ได้",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -251,7 +249,7 @@ public class RoleWebService {
             );
             
         } catch (HttpServerErrorException ex) {
-            LOG.error("Server error deleting role {}: {}", roleId, ex.getMessage());
+            log.error("Server error deleting role {}: {}", roleId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -307,7 +305,7 @@ public class RoleWebService {
                 Void.class
             );
             
-            LOG.info("Permission {} assigned to role {}", permissionId, roleId);
+            log.info("Permission {} assigned to role {}", permissionId, roleId);
             
         } catch (HttpClientErrorException.NotFound ex) {
             throw new CoreApiClientException(
@@ -336,7 +334,7 @@ public class RoleWebService {
                 coreApiUrl + "/api/roles/" + roleId + "/permissions/" + permissionId
             );
             
-            LOG.info("Permission {} removed from role {}", permissionId, roleId);
+            log.info("Permission {} removed from role {}", permissionId, roleId);
             
         } catch (HttpClientErrorException.NotFound ex) {
             throw new CoreApiClientException(

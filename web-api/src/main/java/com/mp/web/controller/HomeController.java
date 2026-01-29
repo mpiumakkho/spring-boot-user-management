@@ -3,8 +3,6 @@ package com.mp.web.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,15 +13,15 @@ import com.mp.web.service.PermissionWebService;
 import com.mp.web.utils.ViewAttributeUtils;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Main page and dashboard controller.
  * Shows system stats from core API using dedicated services.
  */
+@Slf4j
 @Controller
 public class HomeController {
-
-    private static final Logger LOG = LogManager.getLogger(HomeController.class);
 
     private final UserWebService userWebService;
     private final RoleWebService roleWebService;
@@ -78,7 +76,7 @@ public class HomeController {
         try {
             stats.put("totalUsers", userWebService.getAllUsers().size());
         } catch (Exception e) {
-            LOG.warn("Could not fetch users count: {}", e.getMessage());
+            log.warn("Could not fetch users count: {}", e.getMessage());
             stats.put("totalUsers", 0);
         }
 
@@ -92,7 +90,7 @@ public class HomeController {
         try {
             stats.put("totalPermissions", permissionWebService.getAllPermissions().size());
         } catch (Exception e) {
-            LOG.warn("Could not fetch permissions count: {}", e.getMessage());
+            log.warn("Could not fetch permissions count: {}", e.getMessage());
             stats.put("totalPermissions", 0);
         }
 

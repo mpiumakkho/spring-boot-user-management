@@ -1,10 +1,10 @@
 package com.mp.web.controller;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,10 +28,7 @@ import com.mp.web.service.RoleWebService;
  */
 @Controller
 @RequestMapping("/users")
-public class UserWebController {
-
-    private static final Logger LOG = LogManager.getLogger(UserWebController.class);
-    private static final String CURRENT_PATH = "/users";
+public class UserWebController {    private static final String CURRENT_PATH = "/users";
 
     private final UserWebService userWebService;
     private final RoleWebService roleWebService;

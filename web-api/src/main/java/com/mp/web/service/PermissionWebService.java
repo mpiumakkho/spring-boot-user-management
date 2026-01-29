@@ -1,8 +1,8 @@
 package com.mp.web.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.mp.web.exception.CoreApiClientException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -18,11 +18,9 @@ import java.util.Map;
  * Service layer for Permission operations via core-api
  * Handles REST calls and translates exceptions to user-friendly messages
  */
+@Slf4j
 @Service
-public class PermissionWebService {
-    
-    private static final Logger LOG = LogManager.getLogger(PermissionWebService.class);
-    
+public class PermissionWebService {    
     @Autowired
     private RestTemplate restTemplate;
     
@@ -41,7 +39,7 @@ public class PermissionWebService {
             return response.getBody();
             
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            LOG.error("Failed to get permissions: {}", ex.getMessage());
+            log.error("Failed to get permissions: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูล permissions ได้",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -96,11 +94,11 @@ public class PermissionWebService {
                 Map.class
             );
             
-            LOG.info("Permission created successfully");
+            log.info("Permission created successfully");
             return response.getBody();
             
         } catch (HttpClientErrorException.BadRequest ex) {
-            LOG.warn("Validation error creating permission: {}", ex.getResponseBodyAsString());
+            log.warn("Validation error creating permission: {}", ex.getResponseBodyAsString());
             throw new CoreApiClientException(
                 "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง",
                 HttpStatus.BAD_REQUEST,
@@ -109,7 +107,7 @@ public class PermissionWebService {
             );
             
         } catch (HttpClientErrorException.Conflict ex) {
-            LOG.warn("Duplicate permission: {}", ex.getResponseBodyAsString());
+            log.warn("Duplicate permission: {}", ex.getResponseBodyAsString());
             throw new CoreApiClientException(
                 "Permission นี้มีอยู่แล้ว",
                 HttpStatus.CONFLICT,
@@ -126,7 +124,7 @@ public class PermissionWebService {
             );
             
         } catch (HttpClientErrorException ex) {
-            LOG.error("Client error creating permission: {}", ex.getMessage());
+            log.error("Client error creating permission: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถสร้าง permission ได้ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -135,7 +133,7 @@ public class PermissionWebService {
             );
             
         } catch (HttpServerErrorException ex) {
-            LOG.error("Server error creating permission: {}", ex.getMessage());
+            log.error("Server error creating permission: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -162,7 +160,7 @@ public class PermissionWebService {
                 Map.class
             );
             
-            LOG.info("Permission {} updated successfully", permissionId);
+            log.info("Permission {} updated successfully", permissionId);
             return response.getBody();
             
         } catch (HttpClientErrorException.NotFound ex) {
@@ -190,7 +188,7 @@ public class PermissionWebService {
             );
             
         } catch (HttpClientErrorException ex) {
-            LOG.error("Client error updating permission {}: {}", permissionId, ex.getMessage());
+            log.error("Client error updating permission {}: {}", permissionId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถแก้ไขข้อมูลได้ กรุณาตรวจสอบอีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -199,7 +197,7 @@ public class PermissionWebService {
             );
             
         } catch (HttpServerErrorException ex) {
-            LOG.error("Server error updating permission {}: {}", permissionId, ex.getMessage());
+            log.error("Server error updating permission {}: {}", permissionId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -215,7 +213,7 @@ public class PermissionWebService {
     public void deletePermission(String permissionId) {
         try {
             restTemplate.delete(coreApiUrl + "/api/permissions/" + permissionId);
-            LOG.info("Permission {} deleted successfully", permissionId);
+            log.info("Permission {} deleted successfully", permissionId);
             
         } catch (HttpClientErrorException.NotFound ex) {
             throw new CoreApiClientException(
@@ -242,7 +240,7 @@ public class PermissionWebService {
             );
             
         } catch (HttpClientErrorException ex) {
-            LOG.error("Client error deleting permission {}: {}", permissionId, ex.getMessage());
+            log.error("Client error deleting permission {}: {}", permissionId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถลบ permission ได้",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -251,7 +249,7 @@ public class PermissionWebService {
             );
             
         } catch (HttpServerErrorException ex) {
-            LOG.error("Server error deleting permission {}: {}", permissionId, ex.getMessage());
+            log.error("Server error deleting permission {}: {}", permissionId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -273,7 +271,7 @@ public class PermissionWebService {
             return response.getBody();
             
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            LOG.error("Failed to search permissions: {}", ex.getMessage());
+            log.error("Failed to search permissions: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถค้นหา permissions ได้",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -295,7 +293,7 @@ public class PermissionWebService {
             return response.getBody();
             
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            LOG.error("Failed to search permissions: {}", ex.getMessage());
+            log.error("Failed to search permissions: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถค้นหา permissions ได้",
                 HttpStatus.resolve(ex.getStatusCode().value()),

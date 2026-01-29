@@ -1,7 +1,7 @@
 package com.mp.web.exception;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,9 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    
-    private static final Logger LOG = LogManager.getLogger(GlobalExceptionHandler.class);
-
     /**
      * Handle errors from core-api calls
      * Redirect back with user-friendly message
@@ -25,7 +22,7 @@ public class GlobalExceptionHandler {
             CoreApiClientException ex,
             RedirectAttributes redirectAttributes
     ) {
-        LOG.error("Core API error [{}]: {}", ex.getStatusCode(), ex.getMessage(), ex);
+        log.error("Core API error [{}]: {}", ex.getStatusCode(), ex.getMessage(), ex);
         
         // Translate technical error to user-friendly message
         String userMessage = translateErrorMessage(ex);
@@ -47,7 +44,7 @@ public class GlobalExceptionHandler {
             SessionExpiredException ex,
             RedirectAttributes redirectAttributes
     ) {
-        LOG.warn("Session expired: {}", ex.getMessage());
+        log.warn("Session expired: {}", ex.getMessage());
         
         redirectAttributes.addFlashAttribute("info", ex.getMessage());
         return "redirect:" + ex.getLoginPath();
@@ -62,7 +59,7 @@ public class GlobalExceptionHandler {
             ValidationException ex,
             RedirectAttributes redirectAttributes
     ) {
-        LOG.warn("Validation error: {}", ex.getMessage());
+        log.warn("Validation error: {}", ex.getMessage());
         
         redirectAttributes.addFlashAttribute("error", ex.getMessage());
         if (ex.hasFieldErrors()) {
@@ -78,7 +75,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(WebApiException.class)
     public String handleWebApiError(WebApiException ex, Model model) {
-        LOG.error("Web API error: {}", ex.getMessage(), ex);
+        log.error("Web API error: {}", ex.getMessage(), ex);
         
         model.addAttribute("error", ex.getMessage());
         model.addAttribute("currentPath", ex.getCurrentPath());
@@ -95,7 +92,7 @@ public class GlobalExceptionHandler {
             FormSubmissionException ex,
             RedirectAttributes redirectAttributes
     ) {
-        LOG.error("Form submission error: {}", ex.getMessage(), ex);
+        log.error("Form submission error: {}", ex.getMessage(), ex);
         
         redirectAttributes.addFlashAttribute("error", ex.getMessage());
         return "redirect:" + ex.getRedirectPath();
@@ -107,7 +104,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public String handleUnexpectedError(Exception ex, Model model) {
-        LOG.error("Unexpected error: {}", ex.getMessage(), ex);
+        log.error("Unexpected error: {}", ex.getMessage(), ex);
         
         model.addAttribute("error", "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง");
         model.addAttribute("supportContact", "support@example.com");

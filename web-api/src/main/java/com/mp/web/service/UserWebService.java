@@ -1,8 +1,8 @@
 package com.mp.web.service;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.mp.web.exception.CoreApiClientException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -18,11 +18,9 @@ import java.util.Map;
  * Service layer for User operations via core-api
  * Handles REST calls and translates exceptions to user-friendly messages
  */
+@Slf4j
 @Service
-public class UserWebService {
-    
-    private static final Logger LOG = LogManager.getLogger(UserWebService.class);
-    
+public class UserWebService {    
     @Autowired
     private RestTemplate restTemplate;
     
@@ -41,7 +39,7 @@ public class UserWebService {
             return response.getBody();
             
         } catch (HttpClientErrorException | HttpServerErrorException ex) {
-            LOG.error("Failed to get users: {}", ex.getMessage());
+            log.error("Failed to get users: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถดึงข้อมูลผู้ใช้ได้",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -96,12 +94,12 @@ public class UserWebService {
                 Map.class
             );
             
-            LOG.info("User created successfully");
+            log.info("User created successfully");
             return response.getBody();
             
         } catch (HttpClientErrorException.BadRequest ex) {
             // 400 - Validation error
-            LOG.warn("Validation error creating user: {}", ex.getResponseBodyAsString());
+            log.warn("Validation error creating user: {}", ex.getResponseBodyAsString());
             throw new CoreApiClientException(
                 "ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง",
                 HttpStatus.BAD_REQUEST,
@@ -111,7 +109,7 @@ public class UserWebService {
             
         } catch (HttpClientErrorException.Conflict ex) {
             // 409 - Duplicate resource
-            LOG.warn("Duplicate user: {}", ex.getResponseBodyAsString());
+            log.warn("Duplicate user: {}", ex.getResponseBodyAsString());
             throw new CoreApiClientException(
                 "ชื่อผู้ใช้หรืออีเมลนี้มีคนใช้แล้ว",
                 HttpStatus.CONFLICT,
@@ -130,7 +128,7 @@ public class UserWebService {
             
         } catch (HttpClientErrorException ex) {
             // Other 4xx errors
-            LOG.error("Client error creating user: {}", ex.getMessage());
+            log.error("Client error creating user: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถสร้างผู้ใช้ได้ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -140,7 +138,7 @@ public class UserWebService {
             
         } catch (HttpServerErrorException ex) {
             // 5xx - Server errors
-            LOG.error("Server error creating user: {}", ex.getMessage());
+            log.error("Server error creating user: {}", ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -167,7 +165,7 @@ public class UserWebService {
                 Map.class
             );
             
-            LOG.info("User {} updated successfully", userId);
+            log.info("User {} updated successfully", userId);
             return response.getBody();
             
         } catch (HttpClientErrorException.NotFound ex) {
@@ -195,7 +193,7 @@ public class UserWebService {
             );
             
         } catch (HttpClientErrorException ex) {
-            LOG.error("Client error updating user {}: {}", userId, ex.getMessage());
+            log.error("Client error updating user {}: {}", userId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถแก้ไขข้อมูลได้ กรุณาตรวจสอบอีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -204,7 +202,7 @@ public class UserWebService {
             );
             
         } catch (HttpServerErrorException ex) {
-            LOG.error("Server error updating user {}: {}", userId, ex.getMessage());
+            log.error("Server error updating user {}: {}", userId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -220,7 +218,7 @@ public class UserWebService {
     public void deleteUser(String userId) {
         try {
             restTemplate.delete(coreApiUrl + "/api/users/" + userId);
-            LOG.info("User {} deleted successfully", userId);
+            log.info("User {} deleted successfully", userId);
             
         } catch (HttpClientErrorException.NotFound ex) {
             throw new CoreApiClientException(
@@ -247,7 +245,7 @@ public class UserWebService {
             );
             
         } catch (HttpClientErrorException ex) {
-            LOG.error("Client error deleting user {}: {}", userId, ex.getMessage());
+            log.error("Client error deleting user {}: {}", userId, ex.getMessage());
             throw new CoreApiClientException(
                 "ไม่สามารถลบผู้ใช้ได้",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -256,7 +254,7 @@ public class UserWebService {
             );
             
         } catch (HttpServerErrorException ex) {
-            LOG.error("Server error deleting user {}: {}", userId, ex.getMessage());
+            log.error("Server error deleting user {}: {}", userId, ex.getMessage());
             throw new CoreApiClientException(
                 "เกิดข้อผิดพลาดจากระบบ กรุณาลองใหม่อีกครั้ง",
                 HttpStatus.resolve(ex.getStatusCode().value()),
@@ -272,7 +270,7 @@ public class UserWebService {
     public void activateUser(String userId) {
         try {
             restTemplate.put(coreApiUrl + "/api/users/" + userId + "/activate", null);
-            LOG.info("User {} activated", userId);
+            log.info("User {} activated", userId);
             
         } catch (HttpClientErrorException.NotFound ex) {
             throw new CoreApiClientException(
@@ -298,7 +296,7 @@ public class UserWebService {
     public void deactivateUser(String userId) {
         try {
             restTemplate.put(coreApiUrl + "/api/users/" + userId + "/deactivate", null);
-            LOG.info("User {} deactivated", userId);
+            log.info("User {} deactivated", userId);
             
         } catch (HttpClientErrorException.NotFound ex) {
             throw new CoreApiClientException(
@@ -335,7 +333,7 @@ public class UserWebService {
                 Void.class
             );
             
-            LOG.info("Role {} assigned to user {}", roleId, userId);
+            log.info("Role {} assigned to user {}", roleId, userId);
             
         } catch (HttpClientErrorException.NotFound ex) {
             throw new CoreApiClientException(
@@ -364,7 +362,7 @@ public class UserWebService {
                 coreApiUrl + "/api/users/" + userId + "/roles/" + roleId
             );
             
-            LOG.info("Role {} removed from user {}", roleId, userId);
+            log.info("Role {} removed from user {}", roleId, userId);
             
         } catch (HttpClientErrorException.NotFound ex) {
             throw new CoreApiClientException(
