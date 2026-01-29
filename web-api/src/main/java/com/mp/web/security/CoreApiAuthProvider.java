@@ -56,14 +56,29 @@ public class CoreApiAuthProvider implements AuthenticationProvider {
                         session.setAttribute("sessionToken", token);
                     }
                     
-                    // Get roles
+                    // Get roles and permissions
                     List<Map<String, Object>> roleObjs = (List<Map<String, Object>>) user.get("roles");
                     List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     if (roleObjs != null) {
                         for (Map<String, Object> roleObj : roleObjs) {
                             String roleName = (String) roleObj.get("name");
                             if (roleName != null) {
+                                // Add role as authority
                                 authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+                                
+                                // Add permissions from role
+                                List<Map<String, Object>> permissions = (List<Map<String, Object>>) roleObj.get("permissions");
+                                if (permissions != null) {
+                                    for (Map<String, Object> permObj : permissions) {
+                                        String resource = (String) permObj.get("resource");
+                                        String action = (String) permObj.get("action");
+                                        if (resource != null && action != null) {
+                                            // Format: RESOURCE:ACTION (e.g., USER:CREATE, USER:READ)
+                                            String permissionString = resource.toUpperCase() + ":" + action.toUpperCase();
+                                            authorities.add(new SimpleGrantedAuthority(permissionString));
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

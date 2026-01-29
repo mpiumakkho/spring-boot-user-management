@@ -39,4 +39,7 @@ logs/
 ### Environment Variables ###
 .env
 application-local.properties
-application-local.yml 
+application-local.yml
+
+### Documentation ###
+documentation/ 

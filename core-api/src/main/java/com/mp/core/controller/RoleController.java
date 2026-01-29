@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +32,7 @@ public class RoleController {
     }
 
     @GetMapping
+    @PreAuthorize("hasPermission(null, 'ROLE:READ') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllRoles() {
         try {
             LOG.info("Getting all roles");
@@ -98,6 +100,7 @@ public class RoleController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasPermission(null, 'ROLE:CREATE') or hasRole('ADMIN')")
     public ResponseEntity<?> createRole(@RequestBody Role role) {
         LOG.info("Creating new role: {}", role.getName());
         
@@ -120,6 +123,7 @@ public class RoleController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasPermission(null, 'ROLE:UPDATE') or hasRole('ADMIN')")
     public ResponseEntity<?> updateRole(@RequestBody Role role) {
         LOG.info("Updating role: {}", role.getRoleId());
         
@@ -146,6 +150,7 @@ public class RoleController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasPermission(null, 'ROLE:DELETE') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteRole(@RequestBody String request) {
         try {
             JSONObject json = new JSONObject(request);

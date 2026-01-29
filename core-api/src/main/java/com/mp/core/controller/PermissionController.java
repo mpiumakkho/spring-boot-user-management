@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,6 +31,7 @@ public class PermissionController {
     }
 
     @GetMapping
+    @PreAuthorize("hasPermission(null, 'PERMISSION:READ') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllPermissions() {
         try {
             LOG.info("Getting all permissions");
@@ -142,6 +144,7 @@ public class PermissionController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasPermission(null, 'PERMISSION:CREATE') or hasRole('ADMIN')")
     public ResponseEntity<?> createPermission(@RequestBody Permission permission) {
         LOG.info("Creating new permission: {}", permission.getName());
         
@@ -172,6 +175,7 @@ public class PermissionController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasPermission(null, 'PERMISSION:UPDATE') or hasRole('ADMIN')")
     public ResponseEntity<?> updatePermission(@RequestBody Permission permission) {
         LOG.info("Updating permission: {}", permission.getPermissionId());
         
@@ -198,6 +202,7 @@ public class PermissionController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasPermission(null, 'PERMISSION:DELETE') or hasRole('ADMIN')")
     public ResponseEntity<?> deletePermission(@RequestBody String request) {
         try {
             JSONObject json = new JSONObject(request);

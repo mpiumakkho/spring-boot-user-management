@@ -51,6 +51,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasPermission(null, 'USER:READ') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
         try {
             log.debug("Fetching all users from database");
@@ -153,6 +154,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasPermission(null, 'USER:CREATE') or hasRole('ADMIN')")
     public ResponseEntity<?> createUser(@Valid @RequestBody User newUser) {
         if (newUser == null) {
             return ResponseEntity.badRequest().body("Invalid user data");
@@ -187,6 +189,7 @@ public class UserController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasPermission(null, 'USER:UPDATE') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         String userId = user.getUserId();
         
@@ -217,6 +220,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'USER:DELETE') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") String userId) {
         if (userId == null || userId.isBlank()) {
             return ResponseEntity.badRequest().body("Invalid user ID");
@@ -241,6 +245,7 @@ public class UserController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasPermission(null, 'USER:DELETE') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteUserPost(@RequestBody String request) {
         try {
             JSONObject json = new JSONObject(request);
@@ -268,6 +273,7 @@ public class UserController {
     }
 
     @PostMapping("/assign-role")
+    @PreAuthorize("hasPermission(null, 'USER:UPDATE') or hasRole('ADMIN')")
     public ResponseEntity<?> assignRoleToUser(@RequestBody String request) {
         String userId = null;
         String roleId = null;
@@ -369,6 +375,7 @@ public class UserController {
     }
 
     @PostMapping("/admin/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deactivateUser(@RequestBody String request) {
         String userId = null;
         
@@ -390,6 +397,7 @@ public class UserController {
     }
 
     @GetMapping("/admin/pending")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getPendingUsers() {
         try {
             List<User> pendingUsers = userService.getPendingUsers();
