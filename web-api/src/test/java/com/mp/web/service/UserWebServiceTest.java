@@ -94,7 +94,7 @@ class UserWebServiceTest {
     void getUserById_NotFound_ThrowsCoreApiClientException() {
         // Arrange
         when(restTemplate.getForEntity(anyString(), eq(Map.class)))
-            .thenThrow(new HttpClientErrorException.NotFound("User not found", null, null, null, null));
+            .thenThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND));
 
         // Act & Assert
         CoreApiClientException exception = assertThrows(
@@ -129,7 +129,7 @@ class UserWebServiceTest {
         Map<String, Object> userForm = Map.of("username", "existing", "email", "existing@example.com");
         
         when(restTemplate.postForEntity(anyString(), any(), eq(Map.class)))
-            .thenThrow(new HttpClientErrorException.Conflict("Duplicate user", null, null, null, null));
+            .thenThrow(new HttpClientErrorException(HttpStatus.CONFLICT));
 
         // Act & Assert
         CoreApiClientException exception = assertThrows(
@@ -147,7 +147,7 @@ class UserWebServiceTest {
         Map<String, Object> userForm = Map.of("username", "");
         
         when(restTemplate.postForEntity(anyString(), any(), eq(Map.class)))
-            .thenThrow(new HttpClientErrorException.BadRequest("Invalid data", null, null, null, null));
+            .thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
         // Act & Assert
         CoreApiClientException exception = assertThrows(
@@ -172,7 +172,7 @@ class UserWebServiceTest {
     @Test
     void deleteUser_NotFound_ThrowsCoreApiClientException() {
         // Arrange
-        doThrow(new HttpClientErrorException.NotFound("User not found", null, null, null, null))
+        doThrow(new HttpClientErrorException(HttpStatus.NOT_FOUND))
             .when(restTemplate).delete(anyString());
 
         // Act & Assert
