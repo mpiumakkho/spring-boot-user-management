@@ -303,6 +303,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasPermission(null, 'USER:UPDATE') or hasRole('ADMIN')")
     @PostMapping("/remove-role")
     public ResponseEntity<?> removeRoleFromUser(@RequestBody String request) {
         String userId = null;
@@ -332,6 +333,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/update-status")
     public ResponseEntity<?> updateUserStatus(@RequestBody String request) {
         String userId = null;

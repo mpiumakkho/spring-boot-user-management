@@ -27,9 +27,17 @@ public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String permissionId;
+
+    @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(length = 255)
     private String description;
+
+    @Column(nullable = false, length = 50)
     private String resource;
+
+    @Column(nullable = false, length = 50)
     private String action;
     @CreatedDate
     private Date createdAt;
