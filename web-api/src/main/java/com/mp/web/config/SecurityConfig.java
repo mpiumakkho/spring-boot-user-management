@@ -38,7 +38,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> {})
+                // CSRF enabled (default) — Thymeleaf th:action auto-includes CSRF token
+                .csrf(csrf -> csrf
+                    .ignoringRequestMatchers("/auth/logout")
+                )
                 .authenticationProvider(coreApiAuthProvider)
                 .addFilterBefore(sessionFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
