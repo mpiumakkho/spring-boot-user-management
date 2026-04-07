@@ -71,6 +71,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasPermission(null, 'USER:READ') or hasRole('ADMIN')")
     @PostMapping("/find-by-id")
     public ResponseEntity<?> getUserById(@RequestBody String request) {
         try {
@@ -92,6 +93,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasPermission(null, 'USER:READ') or hasRole('ADMIN')")
     @PostMapping("/find-by-username")
     public ResponseEntity<?> getUserByUsername(@RequestBody String request) {
         try {
@@ -113,6 +115,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasPermission(null, 'USER:READ') or hasRole('ADMIN')")
     @PostMapping("/find-by-username-or-email")
     public ResponseEntity<?> getUserByUsernameOrEmail(@RequestBody String request) {
         try {
@@ -410,6 +413,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/users-by-status")
     public ResponseEntity<?> getUsersByStatus(@RequestBody String request) {
         try {
@@ -427,6 +431,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasPermission(null, 'USER:READ') or hasRole('ADMIN')")
     @PostMapping("/find")
     public ResponseEntity<?> findUser(@RequestBody String request) {
         try {

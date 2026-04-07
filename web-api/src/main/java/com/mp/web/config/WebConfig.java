@@ -19,6 +19,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${core.api.key}")
     private String apiKey;
 
+    @Value("${core.api.url}")
+    private String coreApiUrl;
+
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         RestTemplate restTemplate = builder
@@ -27,7 +30,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .build();
 
         restTemplate.getInterceptors().add((request, body, execution) -> {
-            request.getHeaders().set("X-API-Key", apiKey);
+            // Only add API key for core-api requests
+            if (request.getURI().toString().startsWith(coreApiUrl)) {
+                request.getHeaders().set("X-API-Key", apiKey);
+            }
             return execution.execute(request, body);
         });
 
