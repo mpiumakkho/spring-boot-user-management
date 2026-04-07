@@ -1,12 +1,11 @@
 package com.mp.core.controller;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mp.core.dto.LoginRequestDTO;
 import com.mp.core.dto.UserMapper;
 import com.mp.core.dto.UserRequestDTO;
 import com.mp.core.entity.Role;
@@ -33,12 +31,10 @@ import com.mp.core.util.RoleEncryptor;
 
 import jakarta.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
-    private static final Logger log = LogManager.getLogger(UserController.class);
-
     private final UserService userService;
     private final PasswordEncoder pwdEncoder;
     private final UserSessionService sessionService;
@@ -53,6 +49,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasPermission(null, 'USER:READ') or hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
         try {
             log.debug("Fetching all users from database");
@@ -155,6 +152,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasPermission(null, 'USER:CREATE') or hasRole('ADMIN')")
     public ResponseEntity<?> createUser(@Valid @RequestBody User newUser) {
         if (newUser == null) {
             return ResponseEntity.badRequest().body("Invalid user data");
@@ -189,6 +187,7 @@ public class UserController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasPermission(null, 'USER:UPDATE') or hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         String userId = user.getUserId();
         
@@ -219,6 +218,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasPermission(null, 'USER:DELETE') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable("id") String userId) {
         if (userId == null || userId.isBlank()) {
             return ResponseEntity.badRequest().body("Invalid user ID");
@@ -243,6 +243,7 @@ public class UserController {
     }
 
     @PostMapping("/delete")
+    @PreAuthorize("hasPermission(null, 'USER:DELETE') or hasRole('ADMIN')")
     public ResponseEntity<?> deleteUserPost(@RequestBody String request) {
         try {
             JSONObject json = new JSONObject(request);
@@ -270,6 +271,7 @@ public class UserController {
     }
 
     @PostMapping("/assign-role")
+    @PreAuthorize("hasPermission(null, 'USER:UPDATE') or hasRole('ADMIN')")
     public ResponseEntity<?> assignRoleToUser(@RequestBody String request) {
         String userId = null;
         String roleId = null;
@@ -371,6 +373,7 @@ public class UserController {
     }
 
     @PostMapping("/admin/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deactivateUser(@RequestBody String request) {
         String userId = null;
         
@@ -392,6 +395,7 @@ public class UserController {
     }
 
     @GetMapping("/admin/pending")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getPendingUsers() {
         try {
             List<User> pendingUsers = userService.getPendingUsers();
@@ -475,17 +479,7 @@ public class UserController {
                     userJson.put("firstName", user.getFirstName());
                     userJson.put("lastName", user.getLastName());
                     userJson.put("status", user.getStatus());
-                    // roles: id + name only
-                    JSONArray rolesJson = new JSONArray();
-                    if (user.getRoles() != null) {
-                        for (Role role : user.getRoles()) {
-                            JSONObject r = new JSONObject();
-                            r.put("roleId", role.getRoleId());
-                            r.put("name", role.getName());
-                            rolesJson.put(r);
-                        }
-                    }
-                    userJson.put("roles", rolesJson);
+                    userJson.put("roles", user.getRoles());
                     userJson.put("token", session.getToken());
                     
                     JSONObject result = new JSONObject();
@@ -504,7 +498,7 @@ public class UserController {
     }
 
     @PostMapping("/login-encrypt")
-    public ResponseEntity<?> loginEncrypt(@Valid @RequestBody LoginRequestDTO request) {
+    public ResponseEntity<?> loginEncrypt(@Valid @RequestBody UserRequestDTO request) {
         try {
             String usernameOrEmail = request.getUsername();
             String password = request.getPassword();

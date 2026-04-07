@@ -1,7 +1,7 @@
 package com.mp.core.controller;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
+
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +13,8 @@ import com.mp.core.service.UserSessionService;
 
 @RestController
 @RequestMapping("/api/sessions")
-public class SessionController {
-    
-    private static final Logger log = LogManager.getLogger(SessionController.class);
-    private final UserSessionService sessionService;
+@Slf4j
+public class SessionController {    private final UserSessionService sessionService;
     
     public SessionController(UserSessionService sessionService) {
         this.sessionService = sessionService;

@@ -31,17 +31,17 @@ public class SecurityConfig {
 
     @Autowired
     private SessionAuthSuccessHandler sessionAuthSuccessHandler;
-    
+
     @Autowired
     private SessionFilter sessionFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authenticationProvider(coreApiAuthProvider)
-            .addFilterBefore(sessionFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/login", "/auth/login", "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**").permitAll()
+                .authenticationProvider(coreApiAuthProvider)
+                .addFilterBefore(sessionFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/login", "/auth/login", "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/demo/css/**", "/demo/js/**", "/demo/images/**", "/demo/static/**").permitAll()
                 // admin area
                 .requestMatchers("/admin/**").hasRole("SUPER_ADMIN")
                 // user management
@@ -59,20 +59,20 @@ public class SecurityConfig {
                 // dashboard and profile
                 .requestMatchers("/dashboard", "/profile/**").authenticated()
                 .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
+                )
+                .formLogin(form -> form
                 .loginPage("/")
                 .loginProcessingUrl("/")
                 .successHandler(sessionAuthSuccessHandler)
                 .permitAll()
-            )
-            .logout(logout -> logout
+                )
+                .logout(logout -> logout
                 .logoutUrl("/auth/logout")
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
-            );
+                );
         return http.build();
     }
 
@@ -87,4 +87,4 @@ public class SecurityConfig {
             }
         };
     }
-} 
+}
