@@ -50,7 +50,7 @@ public class SecurityConfig {
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2A, 12);
     }
 
     /**
@@ -96,10 +96,16 @@ public class SecurityConfig {
                     "/swagger-ui.html",
                     "/v3/api-docs/**"             // OpenAPI v3 docs
                 ).permitAll()
-                
-                // Authentication endpoints - public
-                .requestMatchers("/api/auth/**").permitAll()
-                
+
+                // Authentication & session endpoints - public (protected by API key in TokenFilter)
+                .requestMatchers(
+                    "/api/users/login",
+                    "/api/users/login-encrypt",
+                    "/api/sessions/validate",
+                    "/api/sessions/keep-alive",
+                    "/api/sessions/logout"
+                ).permitAll()
+
                 // All other endpoints require authentication
                 .anyRequest().authenticated()
             )
