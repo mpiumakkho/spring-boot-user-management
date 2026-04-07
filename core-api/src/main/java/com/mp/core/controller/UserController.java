@@ -60,7 +60,10 @@ public class UserController {
                 return ResponseEntity.ok().body("No users found");
             }
             
-            return ResponseEntity.ok(users);
+            List<com.mp.core.dto.UserResponseDTO> dtos = users.stream()
+                .map(UserMapper::toUserResponseDTO)
+                .collect(java.util.stream.Collectors.toList());
+            return ResponseEntity.ok(dtos);
         } catch (Exception e) {
             log.error("Failed to fetch users", e);
             return ResponseEntity.internalServerError()
@@ -80,7 +83,7 @@ public class UserController {
 
             Optional<User> user = userService.getUserById(userId);
             if (user.isPresent()) {
-                return ResponseEntity.ok(user.get());
+                return ResponseEntity.ok(UserMapper.toUserResponseDTO(user.get()));
             } else {
                 return ResponseEntity.status(404).body("User not found with ID: " + userId);
             }
@@ -101,7 +104,7 @@ public class UserController {
 
             Optional<User> user = userService.getUserByUsername(username);
             if (user.isPresent()) {
-                return ResponseEntity.ok(user.get());
+                return ResponseEntity.ok(UserMapper.toUserResponseDTO(user.get()));
             } else {
                 return ResponseEntity.status(404).body("User not found with username: " + username);
             }
@@ -479,7 +482,16 @@ public class UserController {
                     userJson.put("firstName", user.getFirstName());
                     userJson.put("lastName", user.getLastName());
                     userJson.put("status", user.getStatus());
-                    userJson.put("roles", user.getRoles());
+                    List<JSONObject> loginRoles = new ArrayList<>();
+                    if (user.getRoles() != null) {
+                        for (Role role : user.getRoles()) {
+                            JSONObject r = new JSONObject();
+                            r.put("roleId", role.getRoleId());
+                            r.put("name", role.getName());
+                            loginRoles.add(r);
+                        }
+                    }
+                    userJson.put("roles", loginRoles);
                     userJson.put("token", session.getToken());
                     
                     JSONObject result = new JSONObject();
