@@ -81,7 +81,9 @@ public class TokenFilter extends OncePerRequestFilter {
         // Validate API key for all /api/** requests
         if (path.startsWith("/api/")) {
             String requestApiKey = request.getHeader(API_KEY_HEADER);
-            if (requestApiKey == null || !requestApiKey.equals(apiKey)) {
+            if (requestApiKey == null || !java.security.MessageDigest.isEqual(
+                    requestApiKey.getBytes(java.nio.charset.StandardCharsets.UTF_8),
+                    apiKey.getBytes(java.nio.charset.StandardCharsets.UTF_8))) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 response.setContentType("application/json");
                 response.getWriter().write("{\"error\":\"Invalid or missing API key\"}");
