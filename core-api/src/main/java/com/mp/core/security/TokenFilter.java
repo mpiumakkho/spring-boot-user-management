@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,12 +46,18 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @Slf4j
 @Component
-public class TokenFilter extends OncePerRequestFilter {    private static final String AUTHORIZATION_HEADER = "Authorization";
+public class TokenFilter extends OncePerRequestFilter {
+
+    private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String API_KEY_HEADER = "X-API-Key";
 
     private final UserSessionService sessionService;
     private final UserSessionRepository sessionRepository;
     private final UserRepository userRepository;
+
+    @Value("${app.security.api-key}")
+    private String apiKey;
 
     public TokenFilter(
             UserSessionService sessionService,
@@ -69,9 +76,22 @@ public class TokenFilter extends OncePerRequestFilter {    private static final 
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // Validate API key for all /api/** requests
+        if (path.startsWith("/api/")) {
+            String requestApiKey = request.getHeader(API_KEY_HEADER);
+            if (requestApiKey == null || !requestApiKey.equals(apiKey)) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\":\"Invalid or missing API key\"}");
+                return;
+            }
+        }
+
         try {
             String token = extractToken(request);
-            
+
             if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 authenticateToken(token, request);
             }
