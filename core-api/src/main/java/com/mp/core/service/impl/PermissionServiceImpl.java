@@ -14,6 +14,7 @@ import com.mp.core.exception.BusinessValidationException;
 import com.mp.core.exception.DuplicateResourceException;
 import com.mp.core.exception.ResourceNotFoundException;
 import com.mp.core.repository.PermissionRepository;
+import com.mp.core.service.AuditService;
 import com.mp.core.service.PermissionService;
 
 @Slf4j
@@ -23,9 +24,11 @@ public class PermissionServiceImpl implements PermissionService {
     private static final Pattern PERMISSION_PATTERN = Pattern.compile("^[a-zA-Z_]+:[a-zA-Z_]+$");
     
     private final PermissionRepository permRepo;
+    private final AuditService auditService;
 
-    public PermissionServiceImpl(PermissionRepository permRepo) {
+    public PermissionServiceImpl(PermissionRepository permRepo, AuditService auditService) {
         this.permRepo = permRepo;
+        this.auditService = auditService;
     }
 
     @Override
@@ -59,7 +62,9 @@ public class PermissionServiceImpl implements PermissionService {
         permission.setName(permName); // Store normalized name
 
         log.info("Creating new permission: {}", permName);
-        return permRepo.save(permission);
+        Permission saved = permRepo.save(permission);
+        auditService.log(permission.getCreatedBy(), "CREATE", "PERMISSION", saved.getPermissionId(), "Created permission: " + permName);
+        return saved;
     }
 
     @Override
@@ -101,7 +106,9 @@ public class PermissionServiceImpl implements PermissionService {
         existing.setUpdatedBy(permission.getUpdatedBy());
 
         log.info("Updating permission: {}", existing.getPermissionId());
-        return permRepo.save(existing);
+        Permission updated = permRepo.save(existing);
+        auditService.log(permission.getUpdatedBy(), "UPDATE", "PERMISSION", updated.getPermissionId(), "Updated permission: " + updated.getName());
+        return updated;
     }
 
     @Override
@@ -120,6 +127,7 @@ public class PermissionServiceImpl implements PermissionService {
         }
 
         permRepo.deleteById(id);
+        auditService.log(null, "DELETE", "PERMISSION", id, "Deleted permission");
         log.info("Permission deleted: {}", id);
     }
 

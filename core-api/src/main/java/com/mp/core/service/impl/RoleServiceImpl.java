@@ -17,6 +17,7 @@ import com.mp.core.exception.DuplicateResourceException;
 import com.mp.core.exception.ResourceNotFoundException;
 import com.mp.core.repository.PermissionRepository;
 import com.mp.core.repository.RoleRepository;
+import com.mp.core.service.AuditService;
 import com.mp.core.service.RoleService;
 
 @Slf4j
@@ -24,10 +25,12 @@ import com.mp.core.service.RoleService;
 public class RoleServiceImpl implements RoleService {    
     private final RoleRepository roleRepo;
     private final PermissionRepository permRepo;
+    private final AuditService auditService;
 
-    public RoleServiceImpl(RoleRepository roleRepo, PermissionRepository permRepo) {
+    public RoleServiceImpl(RoleRepository roleRepo, PermissionRepository permRepo, AuditService auditService) {
         this.roleRepo = roleRepo;
         this.permRepo = permRepo;
+        this.auditService = auditService;
     }
 
     @Override
@@ -48,7 +51,9 @@ public class RoleServiceImpl implements RoleService {
         role.setName(roleName.toUpperCase());
         
         log.info("Creating new role: {}", roleName);
-        return roleRepo.save(role);
+        Role saved = roleRepo.save(role);
+        auditService.log(role.getCreatedBy(), "CREATE", "ROLE", saved.getRoleId(), "Created role: " + saved.getName());
+        return saved;
     }
 
     @Override
@@ -74,7 +79,9 @@ public class RoleServiceImpl implements RoleService {
         existing.setUpdatedBy(role.getUpdatedBy());
 
         log.info("Updating role: {}", existing.getRoleId());
-        return roleRepo.save(existing);
+        Role updated = roleRepo.save(existing);
+        auditService.log(role.getUpdatedBy(), "UPDATE", "ROLE", updated.getRoleId(), "Updated role: " + updated.getName());
+        return updated;
     }
 
     @Override
@@ -92,6 +99,7 @@ public class RoleServiceImpl implements RoleService {
         }
         
         roleRepo.deleteById(id);
+        auditService.log(null, "DELETE", "ROLE", id, "Deleted role");
         log.info("Role deleted successfully: {}", id);
     }
 

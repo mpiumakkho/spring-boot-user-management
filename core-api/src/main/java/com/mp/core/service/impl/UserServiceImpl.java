@@ -16,6 +16,7 @@ import com.mp.core.exception.DuplicateResourceException;
 import com.mp.core.exception.ResourceNotFoundException;
 import com.mp.core.repository.RoleRepository;
 import com.mp.core.repository.UserRepository;
+import com.mp.core.service.AuditService;
 import com.mp.core.service.UserService;
 
 @Slf4j
@@ -24,16 +25,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
     private final RoleRepository roleRepo;
     private final PasswordEncoder encoder;
-    
+    private final AuditService auditService;
+
     private static final int MAX_LOGIN_ATTEMPTS = 5;
 
     public UserServiceImpl(
-            UserRepository userRepo, 
+            UserRepository userRepo,
             RoleRepository roleRepo,
-            PasswordEncoder encoder) {
+            PasswordEncoder encoder,
+            AuditService auditService) {
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
         this.encoder = encoder;
+        this.auditService = auditService;
     }
 
     @Override
@@ -61,7 +65,9 @@ public class UserServiceImpl implements UserService {
         user.setStatus("pending");
         
         log.info("Creating new user account for: {}", user.getUsername());
-        return userRepo.save(user);
+        User saved = userRepo.save(user);
+        auditService.log(user.getCreatedBy(), "CREATE", "USER", saved.getUserId(), "Created user: " + saved.getUsername());
+        return saved;
     }
 
     @Override
@@ -89,7 +95,9 @@ public class UserServiceImpl implements UserService {
         existing.setUpdatedBy(user.getUpdatedBy());
         
         log.debug("Updating user: {}", existing.getUserId());
-        return userRepo.save(existing);
+        User updated = userRepo.save(existing);
+        auditService.log(user.getUpdatedBy(), "UPDATE", "USER", updated.getUserId(), "Updated user: " + updated.getUsername());
+        return updated;
     }
 
     @Override
@@ -101,6 +109,7 @@ public class UserServiceImpl implements UserService {
         }
         
         userRepo.deleteById(id);
+        auditService.log(null, "DELETE", "USER", id, "Deleted user");
         log.info("User {} deleted successfully", id);
     }
 
@@ -138,6 +147,7 @@ public class UserServiceImpl implements UserService {
 
         user.getRoles().add(role);
         userRepo.save(user);
+        auditService.log(null, "ASSIGN_ROLE", "USER", userId, "Assigned role " + role.getName() + " to user");
         log.info("Role {} assigned to user {}", roleId, userId);
     }
 
@@ -152,6 +162,7 @@ public class UserServiceImpl implements UserService {
 
         if (user.getRoles().remove(role)) {
             userRepo.save(user);
+            auditService.log(null, "REMOVE_ROLE", "USER", userId, "Removed role " + role.getName() + " from user");
             log.info("Role {} removed from user {}", roleId, userId);
         } else {
             log.warn("User {} did not have role {}", userId, roleId);
