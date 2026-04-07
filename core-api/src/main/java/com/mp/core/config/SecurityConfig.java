@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.mp.core.security.CustomPermissionEvaluator;
+import com.mp.core.security.RateLimitFilter;
 import com.mp.core.security.TokenFilter;
 
 /**
@@ -34,13 +35,16 @@ import com.mp.core.security.TokenFilter;
 public class SecurityConfig {
 
     private final TokenFilter tokenFilter;
+    private final RateLimitFilter rateLimitFilter;
     private final CustomPermissionEvaluator permissionEvaluator;
 
     public SecurityConfig(
             TokenFilter tokenFilter,
+            RateLimitFilter rateLimitFilter,
             CustomPermissionEvaluator permissionEvaluator
     ) {
         this.tokenFilter = tokenFilter;
+        this.rateLimitFilter = rateLimitFilter;
         this.permissionEvaluator = permissionEvaluator;
     }
 
@@ -110,8 +114,9 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             
-            // Add token filter before UsernamePasswordAuthenticationFilter
-            .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
+            // Add rate limit filter first, then token filter
+            .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(tokenFilter, RateLimitFilter.class);
         
         return http.build();
     }
