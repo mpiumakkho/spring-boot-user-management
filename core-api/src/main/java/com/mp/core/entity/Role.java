@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -34,7 +35,11 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String roleId;
+
+    @Column(nullable = false, unique = true, length = 50)
     private String name;
+
+    @Column(length = 255)
     private String description;
     @CreatedDate
     private Date createdAt;
@@ -52,17 +57,4 @@ public class Role {
     )
     private Set<Permission> permissions = new HashSet<>();
 
-    public String getName() { return name; }
-    public String getRoleId() { return roleId; }
-    public String getDescription() { return description; }
-    public String getUpdatedBy() { return updatedBy; }
-    public String getCreatedBy() { return createdBy; }
-    public Date getCreatedAt() { return createdAt; }
-    public Date getUpdatedAt() { return updatedAt; }
-    public Set<Permission> getPermissions() { return permissions; }
-    
-    public void setName(String name) { this.name = name; }
-    public void setDescription(String description) { this.description = description; }
-    public void setUpdatedBy(String updatedBy) { this.updatedBy = updatedBy; }
-    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 } 
