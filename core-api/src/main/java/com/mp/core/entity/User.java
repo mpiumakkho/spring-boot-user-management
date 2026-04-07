@@ -48,7 +48,7 @@ public class User {
     private String createdBy;
     private String updatedBy;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_roles",
         schema = "sample_app",

@@ -43,7 +43,7 @@ public class Role {
     private String createdBy;
     private String updatedBy;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "role_permissions",
         schema = "sample_app",
